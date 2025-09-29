@@ -1,18 +1,63 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { MapPinIcon, SearchIcon, StoreIcon } from "./icons";
+import SearchHistory from "./search-history";
 
 const STORAGE_KEY = "naver-shotcut-search-history";
-const HISTORY_LIMIT = 5;
-const HISTORY_HIDE_DELAY = 140;
+
+const SEARCH_MODE_CONFIG = {
+  web: {
+    label: "통합 검색",
+    placeholder: "검색어를 입력하세요",
+    icon: SearchIcon,
+    buildUrl: (keyword: string) => `https://search.naver.com/search.naver?query=${encodeURIComponent(keyword)}`,
+    hint: "네이버 통합 검색 결과"
+  },
+  map: {
+    label: "지도 검색",
+    placeholder: "지도에서 장소를 검색하세요",
+    icon: MapPinIcon,
+    buildUrl: (keyword: string) => `https://map.naver.com/p/search/${encodeURIComponent(keyword)}`,
+    hint: "네이버 지도에서 위치를 탐색"
+  },
+  store: {
+    label: "스토어 검색",
+    placeholder: "스토어에서 상품을 검색하세요",
+    icon: StoreIcon,
+    buildUrl: (keyword: string) => `https://search.shopping.naver.com/ns/search?query=${encodeURIComponent(keyword)}`,
+    hint: "네이버 쇼핑에서 상품 찾기"
+  }
+} as const;
+
+const fallbackNumber = (value: string | undefined, defaultValue: number) => {
+  const parsed = Number(value);
+  if (Number.isFinite(parsed)) {
+    return parsed;
+  }
+  return defaultValue;
+};
+
+const HISTORY_LIMIT = Math.max(1, Math.floor(fallbackNumber(process.env.NEXT_PUBLIC_SEARCH_HISTORY_LIMIT, 10)));
+
+const HISTORY_HIDE_DELAY = Math.max(
+  0,
+  Math.floor(fallbackNumber(process.env.NEXT_PUBLIC_SEARCH_HISTORY_HIDE_DELAY, 140))
+);
 
 export default function SearchBox() {
   const [query, setQuery] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+
+  type SearchMode = keyof typeof SEARCH_MODE_CONFIG;
+
+  const [searchMode, setSearchMode] = useState<SearchMode>("web");
+  const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const hideHistoryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const modeMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     try {
@@ -27,6 +72,31 @@ export default function SearchBox() {
       console.error("검색 기록을 불러오지 못했습니다", error);
     }
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!isModeMenuOpen) {
+        return;
+      }
+      if (modeMenuRef.current && event.target instanceof Node && !modeMenuRef.current.contains(event.target)) {
+        setIsModeMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsModeMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModeMenuOpen]);
 
   useEffect(() => {
     return () => {
@@ -49,11 +119,9 @@ export default function SearchBox() {
       return;
     }
 
-    window.open(
-      `https://search.naver.com/search.naver?query=${encodeURIComponent(trimmed)}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    const targetUrl = SEARCH_MODE_CONFIG[searchMode].buildUrl(trimmed);
+
+    window.open(targetUrl, "_self", "noopener,noreferrer");
 
     const nextHistory = [trimmed, ...history.filter((item) => item !== trimmed)].slice(0, HISTORY_LIMIT);
     persistHistory(nextHistory);
@@ -89,31 +157,71 @@ export default function SearchBox() {
 
   const handleBlurInput = () => {
     hideHistoryTimeoutRef.current = setTimeout(() => {
-      setIsHistoryOpen(false);
-      setIsInputFocused(false);
+      if (!isModeMenuOpen) {
+        setIsHistoryOpen(false);
+        setIsInputFocused(false);
+      }
     }, HISTORY_HIDE_DELAY);
   };
 
-  const historyContainerClass = `overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-200 ease-out sm:rounded-lg ${
-    isHistoryOpen
-      ? "border border-gray-200 p-4 opacity-100 translate-y-0 max-h-72"
-      : "pointer-events-none border-transparent p-0 opacity-0 -translate-y-2 max-h-0"
-  }`;
+  const currentMode = SEARCH_MODE_CONFIG[searchMode];
+  const ModeIcon = currentMode.icon;
+  const placeholderText = currentMode.placeholder;
+
+  const handleSelectMode = (mode: SearchMode) => {
+    setSearchMode(mode);
+    setIsModeMenuOpen(false);
+    inputRef.current?.focus();
+  };
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4 px-4 sm:px-0">
       <form
         onSubmit={handleSubmit}
-        className={`flex flex-col gap-3 rounded-2xl border border-[#03c75a] bg-white px-4 py-4 shadow-sm transition-all duration-200 ease-out sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:px-5 sm:py-3 ${
+        className={`relative z-30 flex flex-col gap-3 rounded-2xl border border-[#03c75a] bg-white px-4 py-4 shadow-sm transition-all duration-200 ease-out sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:px-5 sm:py-3 ${
           isInputFocused ? "scale-[1.01] shadow-lg sm:shadow-xl" : ""
-        }`}
-      >
+        }`}>
         <div className="flex w-full items-center gap-3">
-          <span className="flex h-6 w-6 items-center justify-center text-[#03c75a]" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-              <path d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15Zm0 2a5.5 5.5 0 1 0 3.482 9.757l.18-.171.171-.18A5.5 5.5 0 0 0 10.5 5Zm8.72 11.438 2.22 2.22-1.06 1.06-2.22-2.219 1.06-1.061Z" />
-            </svg>
-          </span>
+          <div className="relative" ref={modeMenuRef}>
+            <button
+              type="button"
+              onClick={() => setIsModeMenuOpen((prev) => !prev)}
+              className="flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-[#03c75a]/40 bg-white px-3 py-2 text-xs font-semibold text-[#03c75a] shadow-sm transition hover:border-[#03c75a] hover:text-[#03c75a] focus:border-[#03c75a] focus:outline-none focus:ring-1 focus:ring-[#03c75a]"
+              aria-haspopup="listbox"
+              aria-expanded={isModeMenuOpen}
+              onMouseDown={(event) => {
+                event.preventDefault();
+              }}>
+              <ModeIcon className="h-4 w-4" />
+              <span>{currentMode.label}</span>
+            </button>
+            {isModeMenuOpen && (
+              <ul
+                role="listbox"
+                className="absolute left-0 right-auto z-50 mt-2 min-w-[160px] rounded-2xl border border-[#03c75a]/30 bg-white p-2 text-sm shadow-xl"
+                onMouseDown={(event) => event.preventDefault()}>
+                {Object.entries(SEARCH_MODE_CONFIG).map(([modeValue, config]) => {
+                  const isActive = modeValue === searchMode;
+                  const OptionIcon = config.icon;
+                  return (
+                    <li key={modeValue}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => handleSelectMode(modeValue as SearchMode)}
+                        className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left transition ${
+                          isActive ? "bg-[#03c75a]/10 text-[#03c75a]" : "text-gray-600 hover:bg-gray-100"
+                        }`}>
+                        <OptionIcon className="h-4 w-4" />
+                        <span className="text-xs font-medium">{config.label}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
           <label htmlFor="naver-search" className="sr-only">
             네이버 검색어 입력
           </label>
@@ -125,45 +233,32 @@ export default function SearchBox() {
             onChange={(event) => setQuery(event.target.value)}
             onFocus={handleFocusInput}
             onBlur={handleBlurInput}
-            placeholder="검색어를 입력하세요"
-            className="h-10 flex-1 rounded-xl border border-gray-100 bg-gray-50 px-4 text-base text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-[#03c75a] focus:bg-white focus:outline-none sm:h-7 sm:border-0 sm:bg-transparent sm:px-0"
+            placeholder={placeholderText}
+            className="h-10 min-w-0 flex-1 rounded-xl border border-gray-100 bg-gray-50 px-4 text-base text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-[#03c75a] focus:bg-white focus:outline-none sm:h-7 sm:border-0 sm:bg-transparent sm:px-0"
           />
         </div>
         <button
           type="submit"
-          className="h-11 w-full rounded-full bg-[#03c75a] text-sm font-semibold text-white transition-all duration-200 hover:bg-[#02b856] focus:outline-none focus:ring-2 focus:ring-[#03c75a] focus:ring-offset-2 sm:ml-3 sm:h-10 sm:w-20"
-        >
+          className="h-10 w-full rounded-full bg-[#03c75a] px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#02b856] focus:outline-none focus:ring-2 focus:ring-[#03c75a] focus:ring-offset-2 sm:ml-3 sm:h-9 sm:w-24">
           검색
         </button>
       </form>
 
-      {history.length > 0 && (
-        <div className={historyContainerClass}>
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <span className="text-sm font-semibold text-gray-700">최근 검색어</span>
-            <button
-              type="button"
-              onClick={handleClearHistory}
-              className="text-xs text-gray-400 transition-colors duration-150 hover:text-gray-600"
-            >
-              전체삭제
-            </button>
-          </div>
-          <ul className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-            {history.map((item) => (
-              <li key={item}>
-                <button
-                  type="button"
-                  onClick={() => handleSelectHistory(item)}
-                  className="w-full rounded-full border border-gray-200 px-3 py-2 text-xs text-gray-700 transition-all duration-150 hover:-translate-y-0.5 hover:border-[#03c75a] hover:text-[#03c75a] sm:w-auto sm:py-1.5"
-                >
-                  {item}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* <div className="flex items-center gap-2 px-1 text-xs text-gray-500">
+        <span className="inline-flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-[#03c75a]" />
+          {currentMode.label}
+        </span>
+        <span aria-hidden="true">·</span>
+        <span>{currentMode.hint}</span>
+      </div> */}
+
+      <SearchHistory
+        items={history}
+        isOpen={isHistoryOpen}
+        onSelect={handleSelectHistory}
+        onClear={handleClearHistory}
+      />
     </div>
   );
 }

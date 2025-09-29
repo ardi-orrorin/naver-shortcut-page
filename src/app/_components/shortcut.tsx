@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { MouseEventHandler } from "react";
 
-type ShutcutProps = {
+type ShortcutProps = {
   id: string;
   name: string;
   description: string;
@@ -16,7 +16,7 @@ type ShutcutProps = {
   className?: string;
 };
 
-export default function Shutcut({
+export default function Shortcut({
   id,
   name,
   description,
@@ -26,13 +26,21 @@ export default function Shutcut({
   isEditable = false,
   onClick,
   className
-}: ShutcutProps) {
+}: ShortcutProps) {
   const containerClassName = ["flex items-center gap-3", className].filter(Boolean).join(" ");
 
   const content = (
     <>
       <div className="relative">
-        <Image className="border border-gray-400 rounded-xl" src={icon} alt={name} width={50} height={50} />
+        <Image
+          className="border border-gray-400 rounded-xl"
+          src={icon}
+          alt={name}
+          width={50}
+          height={50}
+          quality={70}
+        />
+
         {isFavorite && (
           <span
             aria-hidden="true"
@@ -59,7 +67,7 @@ export default function Shutcut({
   }
 
   return (
-    <Link id={id} href={url} className={containerClassName}>
+    <Link id={id} href={url} className={containerClassName} prefetch>
       {content}
     </Link>
   );

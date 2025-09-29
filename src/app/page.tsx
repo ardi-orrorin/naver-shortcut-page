@@ -1,41 +1,25 @@
-import jsToBase64Func from "@/utils/jsToBase64";
-import { findShutcutByIds } from "@/utils/shutcuts";
-import MoreShutcut from "./_components/more-shutcut";
+import jsToBase64Func from "@/app/_utils/funcs/jsToBase64";
+import BookmarkHelpModal from "./_components/bookmark-help-modal";
+import MoreShortcut from "./_components/more-shortcut";
 import SearchBox from "./_components/search-box";
-import Shutcut from "./_components/shutcut";
+import SelectedShortcuts from "./_components/selected-shortcuts";
 import Title from "./_components/title";
 
 type PageProps = {
-  searchParams?: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default function Home({ searchParams = {} }: PageProps) {
-  const rawParam = searchParams.shutcuts;
-  const encoded = Array.isArray(rawParam) ? rawParam.at(0) : rawParam;
-  const decoded = encoded ? jsToBase64Func.decodeFromUrl(encoded) : [];
-  const loadShutcuts = Array.isArray(decoded) ? (decoded as string[]) : [];
-
-  const selectedShutcuts = findShutcutByIds(loadShutcuts);
+export default async function Home({ searchParams }: PageProps) {
+  const rawParam = (await searchParams).shortcuts;
+  const loadShortcuts = jsToBase64Func.decodeFromUrl(rawParam as string);
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-8">
+    <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-gray-50 py-10">
+      <BookmarkHelpModal />
       <Title />
       <SearchBox />
-      {selectedShutcuts.length > 0 && (
-        <div className="flex w-full flex-wrap justify-center gap-4 px-4">
-          {selectedShutcuts.map((shutcut) => (
-            <Shutcut
-              key={shutcut.id}
-              {...{
-                ...shutcut,
-                isFavorite: false,
-                isEditable: false
-              }}
-            />
-          ))}
-        </div>
-      )}
-      <MoreShutcut loadShutcuts={loadShutcuts} />
+      {loadShortcuts.length > 0 && <SelectedShortcuts ids={loadShortcuts} />}
+      <MoreShortcut {...{ loadShortcuts }} />
     </div>
   );
 }

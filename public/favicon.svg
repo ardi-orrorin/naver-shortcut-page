@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Naver Shortcut Helper Favicon</title>
+  <desc id="desc">Green rounded square with a white bookmark and spark icon.</desc>
+  <rect width="64" height="64" rx="14" fill="#03c75a"/>
+  <path fill="#ffffff" d="M22 14h20a4 4 0 0 1 4 4v31.75L32 44l-14 5.75V18a4 4 0 0 1 4-4z"/>
+  <path fill="#12d26c" d="M43 25.5a2 2 0 0 0-1.79-1.1h-6.36l2.26-4.9a2 2 0 0 0-3.61-1.68l-6.5 10.6A2 2 0 0 0 29.86 31h6.14l-2.26 4.9a2 2 0 1 0 3.61 1.68l6.5-10.6c.28-.45.35-.98.15-1.48z"/>
+</svg>
