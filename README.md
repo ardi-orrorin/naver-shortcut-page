@@ -21,12 +21,28 @@
 
 ## 빌드
 
+### npm build
+
 ```bash
 npm run build
 ```
 
+### example docker build
+
+```bash
+docker build -t naver/shortcut:1.0.0 -f docker/Dockerfile .
+```
+
 ## 배포
+
+### npm run
 
 ```bash
 npm run start
+```
+
+### example docker run
+
+```bash
+docker run -d -p 3000:3000 naver/shortcut:1.0.0
 ```
