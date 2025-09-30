@@ -1,4 +1,5 @@
 FROM       node:22-alpine
+ENV        HOSTNAME=0.0.0.0
 LABEL      author="ARDI"
 RUN        apk add --no-cache curl
 RUN        mkdir -p /app 
