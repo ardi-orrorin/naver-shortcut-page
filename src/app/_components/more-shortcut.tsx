@@ -1,65 +1,167 @@
 "use client";
 
-import shortcutFuncs from "@/app/_utils/funcs/shortcuts-func";
-import { ShortcutT } from "@/app/_utils/types/shortcuts-type";
-import { useEffect, useMemo, useState } from "react";
-import shutcuts from "../_data/shortcuts";
+import type { UIEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import jsToBase64Func from "../_utils/funcs/jsToBase64";
+import { useShortcutGroups } from "./more-shortcut/use-shortcut-groups";
+import VirtualizedShortcutList, { type VirtualRow } from "./more-shortcut/virtualized-shortcut-list";
 import Shortcut from "./shortcut";
+
+const VIRTUALIZATION_THRESHOLD = 50;
 
 export default function MoreShortcut({ loadShortcuts }: { loadShortcuts: string[] }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFullHeight, setIsFullHeight] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+  const [isCompactLayout, setIsCompactLayout] = useState(false);
+  const [listHeight, setListHeight] = useState(360);
+  const [autoExpandEnabled, setAutoExpandEnabled] = useState(true);
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
-  const filteredShortcuts = useMemo(() => {
-    const baseShortcuts = !searchKeyword.trim() ? shutcuts : shortcutFuncs.findByName(searchKeyword);
+  const favoriteIdSet = useMemo(() => new Set(loadShortcuts), [loadShortcuts]);
+  const { groups: groupedShortcuts } = useShortcutGroups(searchKeyword, favoriteIdSet, showSelectedOnly);
 
-    const list = Array.isArray(baseShortcuts) ? baseShortcuts : [];
+  const virtualRows = useMemo<VirtualRow[]>(() => {
+    const rows: VirtualRow[] = [];
 
-    if (!showSelectedOnly) {
-      return list;
-    }
-
-    return list.filter((item) => loadShortcuts.includes(item.id));
-  }, [searchKeyword, showSelectedOnly, loadShortcuts]);
-
-  const groupedShortcuts = useMemo(() => {
-    const groups = new Map<string, { category: string; items: ShortcutT[] }>();
-
-    filteredShortcuts.forEach((item) => {
-      const key = item.categoryCode || item.category;
-      const existing = groups.get(key);
-      if (existing) {
-        existing.items.push(item);
-      } else {
-        groups.set(key, { category: item.category, items: [item] });
-      }
+    groupedShortcuts.forEach(({ categoryKey, category, items }) => {
+      rows.push({ type: "category", categoryKey, category });
+      items.forEach((item) => {
+        rows.push({ type: "item", categoryKey, item });
+      });
     });
 
-    return Array.from(groups.entries())
-      .map(([categoryKey, value]) => ({
-        categoryKey,
-        category: value.category,
-        items: value.items
-      }))
-      .filter(({ items }) => items.length > 0);
-  }, [filteredShortcuts]);
+    return rows;
+  }, [groupedShortcuts]);
 
-  const onChangeFavorite = (id: string) => {
-    const newShortcuts = [...loadShortcuts];
-    const index = newShortcuts.indexOf(id);
-    if (index > -1) {
-      newShortcuts.splice(index, 1);
-    } else {
-      newShortcuts.push(id);
+  const shouldVirtualize = isCompactLayout && virtualRows.length > VIRTUALIZATION_THRESHOLD;
+
+  const onChangeFavorite = useCallback(
+    (id: string) => {
+      const newShortcuts = [...loadShortcuts];
+      const index = newShortcuts.indexOf(id);
+      if (index > -1) {
+        newShortcuts.splice(index, 1);
+      } else {
+        newShortcuts.push(id);
+      }
+
+      const lzSearchParams = jsToBase64Func.encodeToUrl(newShortcuts);
+
+      window.location.href = `/?shortcuts=${lzSearchParams}`;
+    },
+    [loadShortcuts]
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
     }
 
-    const lzSearchParams = jsToBase64Func.encodeToUrl(newShortcuts);
+    const mediaQuery = window.matchMedia("(max-width: 640px)");
+    const handleChange = () => setIsCompactLayout(mediaQuery.matches);
 
-    window.location.href = `/?shortcuts=${lzSearchParams}`;
-  };
+    handleChange();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => {
+        mediaQuery.removeEventListener("change", handleChange);
+      };
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => {
+      mediaQuery.removeListener(handleChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const computeHeight = () => {
+      const viewport = window.innerHeight || 0;
+      const raw = isFullHeight ? viewport - 160 : viewport * 0.6 - 96;
+      const fallback = isFullHeight ? viewport - 200 : 360;
+      const preferred = Number.isFinite(raw) ? raw : fallback;
+      const upperBound = Math.max(isFullHeight ? viewport - 120 : viewport * 0.75, 320);
+      const height = Math.max(Math.min(preferred, upperBound), 240);
+
+      setListHeight(height);
+    };
+
+    computeHeight();
+    window.addEventListener("resize", computeHeight);
+
+    return () => {
+      window.removeEventListener("resize", computeHeight);
+    };
+  }, [isFullHeight]);
+
+  useEffect(() => {
+    if (!isCompactLayout) {
+      setAutoExpandEnabled(true);
+    }
+  }, [isCompactLayout]);
+
+  const hasResults = groupedShortcuts.length > 0;
+  const showVirtualList = shouldVirtualize && hasResults;
+  const resolvedListHeight = Math.max(Math.floor(listHeight), 240);
+
+  const handleScrollableAreaScroll = useCallback(
+    (event: UIEvent<HTMLDivElement>) => {
+      if (!isCompactLayout) {
+        return;
+      }
+
+      const { scrollTop } = event.currentTarget;
+
+      if (scrollTop <= 0) {
+        setAutoExpandEnabled(true);
+      } else if (!isFullHeight && autoExpandEnabled) {
+        setIsFullHeight(true);
+      }
+    },
+    [isCompactLayout, isFullHeight, autoExpandEnabled]
+  );
+
+  const handleVirtualizedScroll = useCallback(
+    (scrollTop: number) => {
+      if (!isCompactLayout) {
+        return;
+      }
+
+      if (scrollTop <= 0) {
+        setAutoExpandEnabled(true);
+        return;
+      }
+
+      if (!isFullHeight && autoExpandEnabled) {
+        setIsFullHeight(true);
+      }
+    },
+    [isCompactLayout, isFullHeight, autoExpandEnabled]
+  );
+
+  const handleToggleFullHeight = useCallback(() => {
+    setIsFullHeight((prev) => {
+      const next = !prev;
+
+      if (!next) {
+        setAutoExpandEnabled(false);
+        if (scrollAreaRef.current) {
+          scrollAreaRef.current.scrollTo({ top: 0, behavior: "auto" });
+        }
+      } else {
+        setAutoExpandEnabled(true);
+      }
+
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     if (!isExpanded) {
@@ -134,7 +236,7 @@ export default function MoreShortcut({ loadShortcuts }: { loadShortcuts: string[
                   </button>
                   <button
                     type="button"
-                    onClick={() => setIsFullHeight((prev) => !prev)}
+                    onClick={handleToggleFullHeight}
                     aria-pressed={isFullHeight}
                     className={`rounded-full border px-4 py-2 text-sm transition ${
                       isFullHeight
@@ -148,10 +250,20 @@ export default function MoreShortcut({ loadShortcuts }: { loadShortcuts: string[
               <p className="mt-2 text-xs text-gray-400">예: 쇼핑, ㅅㅍ, ㄴㅍ, 메모</p>
             </div>
             <div
-              className={`flex-1 min-h-0 overflow-y-auto px-4 pb-4 ${
-                isFullHeight ? "max-h-none" : "max-h-[calc(60vh-96px)]"
-              }`}>
-              {groupedShortcuts.length > 0 ? (
+              ref={scrollAreaRef}
+              className={`flex-1 min-h-0 px-4 pb-4 ${isFullHeight ? "max-h-none" : "max-h-[calc(60vh-96px)]"} ${
+                showVirtualList ? "overflow-hidden" : "overflow-y-auto"
+              }`}
+              onScroll={handleScrollableAreaScroll}>
+              {showVirtualList ? (
+                <VirtualizedShortcutList
+                  favoriteIdSet={favoriteIdSet}
+                  height={resolvedListHeight}
+                  onChangeFavorite={onChangeFavorite}
+                  onScroll={handleVirtualizedScroll}
+                  virtualRows={virtualRows}
+                />
+              ) : hasResults ? (
                 <div className="flex flex-col gap-6">
                   {groupedShortcuts.map(({ categoryKey, category, items }) => (
                     <section key={categoryKey} className="space-y-3">
@@ -162,7 +274,7 @@ export default function MoreShortcut({ loadShortcuts }: { loadShortcuts: string[
                             key={`more-${item.id}`}
                             {...item}
                             isEditable
-                            isFavorite={loadShortcuts.includes(item.id)}
+                            isFavorite={favoriteIdSet.has(item.id)}
                             onClick={() => onChangeFavorite(item.id)}
                             className="h-full rounded-2xl border border-gray-100 bg-white px-4 py-3 text-left shadow-sm transition hover:border-[#03c75a] hover:shadow-md"
                           />
