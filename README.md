@@ -9,11 +9,22 @@
 
 ## 스크린샷
 
-![스크린샷](./resource/01.jpg)
-![스크린샷](./resource/02.jpg)
-![스크린샷](./resource/03.jpg)
+### Desktop
 
-## 기술 스텍
+![스크린샷](./resource/desktop_01.jpg)
+![스크린샷](./resource/desktop_02.jpg)
+![스크린샷](./resource/desktop_03.jpg)
+![스크린샷](./resource/desktop_04.jpg)
+
+### Mobile
+
+<p>
+  <img src="./resource/mobile_01.png" alt="이미지1" width="200"/>
+  <img src="./resource/mobile_02.png" alt="이미지2" width="200"/>
+  <img src="./resource/mobile_03.png" alt="이미지3" width="200"/>
+</p>
+
+## 기술 스택
 
 - NextJs
 - TypeScript
@@ -35,6 +46,21 @@ docker build -t naver/shortcut:1.0.0 -f docker/Dockerfile .
 
 ## 배포
 
+### 환경변수
+
+#### 검색 히스토리 최대보관 개수
+
+- NEXT_PUBLIC_SEARCH_HISTORY_LIMIT=20
+
+#### 이미지 품질
+
+- NEXT_PUBLIC_IMAGE_QUALITY=30 ## 30, 50, 70, 90, 100
+
+#### 날씨 API
+1. www.weatherapi.com 회원가입
+2. login 후 my page 접속 
+3. Regenerate API Key 생성 후 복사
+4. NEXT_PUBLIC_WEATHER_API_KEY 환경변수에 추가
 ### npm run
 
 ```bash

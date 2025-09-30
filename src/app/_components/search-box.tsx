@@ -144,6 +144,23 @@ export default function SearchBox() {
     setIsHistoryOpen(false);
   };
 
+  const handleDeleteHistoryItem = (value: string) => {
+    if (hideHistoryTimeoutRef.current) {
+      clearTimeout(hideHistoryTimeoutRef.current);
+      hideHistoryTimeoutRef.current = null;
+    }
+    const nextHistory = history.filter((item) => item !== value);
+    persistHistory(nextHistory);
+
+    if (nextHistory.length === 0) {
+      setIsHistoryOpen(false);
+      setIsInputFocused(false);
+      return;
+    }
+
+    setIsHistoryOpen(true);
+  };
+
   const handleFocusInput = () => {
     if (hideHistoryTimeoutRef.current) {
       clearTimeout(hideHistoryTimeoutRef.current);
@@ -258,6 +275,7 @@ export default function SearchBox() {
         isOpen={isHistoryOpen}
         onSelect={handleSelectHistory}
         onClear={handleClearHistory}
+        onDelete={handleDeleteHistoryItem}
       />
     </div>
   );

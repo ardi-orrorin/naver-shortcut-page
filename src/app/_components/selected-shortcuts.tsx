@@ -11,7 +11,7 @@ type SelectedShortcutsProps = {
   ids: string[];
 };
 
-const TILE_CLASS = "flex h-[50px] w-[50px] items-center justify-center";
+const TILE_CLASS = "flex h-[60px] w-[50px] items-center justify-center";
 
 const buildReorderedUrl = (ids: string[]) => {
   if (ids.length === 0) {

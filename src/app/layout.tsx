@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "Naver Shortcut",
   icons: {
     icon: "/favicon.svg"
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1
   }
 };
 

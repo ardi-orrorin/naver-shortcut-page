@@ -16,6 +16,8 @@ type ShortcutProps = {
   className?: string;
 };
 
+const QUALITIES = [30, 50, 70, 90, 100];
+
 export default function Shortcut({
   id,
   name,
@@ -27,7 +29,15 @@ export default function Shortcut({
   onClick,
   className
 }: ShortcutProps) {
-  const containerClassName = ["flex items-center gap-3", className].filter(Boolean).join(" ");
+  const containerClassName = ["flex items-center", !isEditable && !isFavorite ? `flex-col gap-2` : `gap-3`, className]
+    .filter(Boolean)
+    .join(" ");
+
+  const imageQuality: number = Number(process.env.NEXT_PUBLIC_IMAGE_QUALITY || 30);
+
+  if (!QUALITIES.includes(imageQuality)) {
+    throw new Error(`Invalid image quality allowed values are ${QUALITIES.join(", ")}`);
+  }
 
   const content = (
     <>
@@ -38,15 +48,17 @@ export default function Shortcut({
           alt={name}
           width={50}
           height={50}
-          quality={70}
+          quality={imageQuality}
         />
 
         {isFavorite && (
-          <span
-            aria-hidden="true"
-            className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-400 text-xs font-semibold text-white shadow-sm">
-            ★
-          </span>
+          <>
+            <span
+              aria-hidden="true"
+              className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-400 text-xs font-semibold text-white shadow-sm">
+              ★
+            </span>
+          </>
         )}
       </div>
       {isEditable && (
@@ -55,6 +67,8 @@ export default function Shortcut({
           <p className="truncate text-xs text-gray-500">{description}</p>
         </div>
       )}
+
+      {!isEditable && !isFavorite && <label className="truncate text-sm text-gray-500 font-bold">{name}</label>}
     </>
   );
 

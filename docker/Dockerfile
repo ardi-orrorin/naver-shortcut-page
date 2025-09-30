@@ -1,5 +1,6 @@
 FROM       node:22-alpine
 LABEL      author="ARDI"
+RUN        apk add --no-cache curl
 RUN        mkdir -p /app 
 RUN        mkdir -p /app/public
 WORKDIR    /app

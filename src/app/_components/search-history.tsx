@@ -5,9 +5,10 @@ export type SearchHistoryProps = {
   isOpen: boolean;
   onSelect: (value: string) => void;
   onClear: () => void;
+  onDelete: (value: string) => void;
 };
 
-function SearchHistory({ items, isOpen, onSelect, onClear }: SearchHistoryProps) {
+function SearchHistory({ items, isOpen, onSelect, onClear, onDelete }: SearchHistoryProps) {
   if (items.length === 0) {
     return null;
   }
@@ -31,12 +32,22 @@ function SearchHistory({ items, isOpen, onSelect, onClear }: SearchHistoryProps)
       </div>
       <ul className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
         {items.map((item) => (
-          <li key={item}>
+          <li key={item} className="flex items-center gap-1">
             <button
               type="button"
               onClick={() => onSelect(item)}
               className="w-full rounded-full border border-gray-200 px-3 py-2 text-xs text-gray-700 transition-all duration-150 hover:-translate-y-0.5 hover:border-[#03c75a] hover:text-[#03c75a] sm:w-auto sm:py-1.5">
               {item}
+            </button>
+            <button
+              type="button"
+              onClick={() => onDelete(item)}
+              onMouseDown={(event) => {
+                event.preventDefault();
+              }}
+              aria-label={`${item} 삭제`}
+              className="h-7 w-7 shrink-0 rounded-full border border-gray-200 text-xs text-gray-400 transition-colors duration-150 hover:border-red-200 hover:text-red-500">
+              X
             </button>
           </li>
         ))}

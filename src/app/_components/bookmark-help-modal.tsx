@@ -4,19 +4,93 @@ import { useState } from "react";
 
 export default function BookmarkHelpModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
+  const shareLink = async () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const url = window.location.href;
+
+    const showMessage = (message: string) => {
+      setShareMessage(message);
+      window.setTimeout(() => setShareMessage(null), 2500);
+    };
+
+    const fallbackCopyToClipboard = () => {
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = url;
+        textArea.style.position = "fixed";
+        textArea.style.top = "-1000px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
+        return successful;
+      } catch (error) {
+        console.error("Failed to copy via fallback", error);
+        return false;
+      }
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: document.title, url });
+        showMessage("공유 메뉴를 열었습니다.");
+        return;
+      }
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        showMessage("링크가 복사되었습니다.");
+        return;
+      }
+
+      if (fallbackCopyToClipboard()) {
+        showMessage("링크가 복사되었습니다.");
+        return;
+      }
+
+      showMessage("링크 복사에 실패했습니다. 직접 복사해 주세요.");
+    } catch (error) {
+      console.error("Failed to share link", error);
+
+      if (fallbackCopyToClipboard()) {
+        showMessage("링크가 복사되었습니다.");
+        return;
+      }
+
+      showMessage("링크 복사에 실패했습니다. 직접 복사해 주세요.");
+    }
+  };
+
   return (
-    <div className="absolute right-4 top-4">
-      <button
-        type="button"
-        onClick={openModal}
-        className="rounded-full border border-[#03c75a] px-4 py-2 text-sm font-semibold text-[#03c75a] transition-colors hover:bg-[#03c75a] hover:text-white"
-      >
-        북마크 안내
-      </button>
+    <div className="absolute right-4 top-4 text-right">
+      <div className="flex justify-end gap-2">
+        <button
+          type="button"
+          onClick={shareLink}
+          className="rounded-full border border-[#03c75a] px-4 py-2 text-sm font-semibold text-[#03c75a] transition-colors hover:bg-[#03c75a] hover:text-white"
+        >
+          링크 공유
+        </button>
+        <button
+          type="button"
+          onClick={openModal}
+          className="rounded-full border border-[#03c75a] px-4 py-2 text-sm font-semibold text-[#03c75a] transition-colors hover:bg-[#03c75a] hover:text-white"
+        >
+          북마크 안내
+        </button>
+      </div>
+      <p aria-live="polite" className="mt-2 text-xs text-gray-500">
+        {shareMessage ?? " "}
+      </p>
 
       {isOpen && (
         <div

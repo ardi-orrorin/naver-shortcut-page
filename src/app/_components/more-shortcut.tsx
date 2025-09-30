@@ -100,7 +100,7 @@ export default function MoreShortcut({ loadShortcuts }: { loadShortcuts: string[
                     onChange={(event) => setSearchKeyword(event.target.value)}
                     placeholder="서비스명을 입력하거나 초성으로 검색하세요"
                     autoFocus
-                    className="w-full rounded-full border border-[#03c75a]/60 px-4 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#03c75a] focus:outline-none focus:ring-1 focus:ring-[#03c75a]"
+                    className="w-full rounded-full border border-[#03c75a]/60 px-4 py-2 text-base text-gray-900 placeholder:text-gray-400 focus:border-[#03c75a] focus:outline-none focus:ring-1 focus:ring-[#03c75a]"
                   />
                 </div>
                 <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:flex sm:items-center sm:gap-2">
