@@ -11,7 +11,8 @@ type SelectedShortcutsProps = {
   ids: string[];
 };
 
-const TILE_CLASS = "flex h-[60px] w-[50px] items-center justify-center";
+const TILE_CLASS =
+  "flex h-[90px] min-h-[90px] max-h-[90px] min-w-[75px] w-[75px] max-w-[75px] items-center justify-center";
 
 const buildReorderedUrl = (ids: string[]) => {
   if (ids.length === 0) {
@@ -67,7 +68,10 @@ export default function SelectedShortcuts({ ids }: SelectedShortcutsProps) {
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="selected-shortcuts" direction="horizontal">
           {(provided) => (
-            <ul ref={provided.innerRef} {...provided.droppableProps} className="flex flex-wrap justify-center gap-3">
+            <ul
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="flex flex-wrap justify-center gap-x-1 gap-y-4">
               {orderedShortcuts.map((shutcut, index) => (
                 <Draggable key={shutcut.id} draggableId={shutcut.id} index={index}>
                   {(draggableProvided, snapshot) => (

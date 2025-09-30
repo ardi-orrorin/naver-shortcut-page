@@ -61,6 +61,7 @@ export default function Shortcut({
           </>
         )}
       </div>
+      
       {isEditable && (
         <div className="flex flex-1 flex-col overflow-hidden text-left">
           <h2 className="truncate text-sm font-bold">{name}</h2>
