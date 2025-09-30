@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
 
 type ErrorPageProps = {
@@ -31,11 +32,11 @@ export default function Error({ error, reset }: ErrorPageProps) {
             className="w-full rounded-full bg-[#03c75a] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#02b856] focus:outline-none focus:ring-2 focus:ring-[#03c75a] focus:ring-offset-2 sm:w-auto">
             다시 시도
           </button>
-          <a
+          <Link
             href="/"
             className="w-full rounded-full border border-gray-200 px-5 py-2 text-sm font-semibold text-gray-600 transition hover:border-[#03c75a] hover:text-[#03c75a] sm:w-auto">
             홈으로 이동
-          </a>
+          </Link>
         </div>
       </div>
     </div>
