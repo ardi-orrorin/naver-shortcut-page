@@ -7,3 +7,17 @@ input {
 input::placeholder {
   font-size: 0.85rem !important;
 }
+
+/* Custom scrollbar styles - hide default scrollbar */
+.custom-scrollbar {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+  position: relative;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+

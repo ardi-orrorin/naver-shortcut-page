@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { MouseEventHandler } from "react";
+import { useLinkOpenPreference } from "../_utils/contexts/link-open-preference-context";
 
 type ShortcutProps = {
   id: string;
@@ -29,6 +30,8 @@ export default function Shortcut({
   onClick,
   className
 }: ShortcutProps) {
+  const { isNewTab } = useLinkOpenPreference();
+
   const containerClassName = ["flex items-center", !isEditable && !isFavorite ? `flex-col gap-2` : `gap-3`, className]
     .filter(Boolean)
     .join(" ");
@@ -61,7 +64,7 @@ export default function Shortcut({
           </>
         )}
       </div>
-      
+
       {isEditable && (
         <div className="flex flex-1 flex-col overflow-hidden text-left">
           <h2 className="truncate text-sm font-bold">{name}</h2>
@@ -82,7 +85,13 @@ export default function Shortcut({
   }
 
   return (
-    <Link id={id} href={url} className={containerClassName} prefetch>
+    <Link
+      id={id}
+      href={url}
+      className={containerClassName}
+      prefetch
+      target={isNewTab ? "_blank" : undefined}
+      rel={isNewTab ? "noopener noreferrer" : undefined}>
       {content}
     </Link>
   );

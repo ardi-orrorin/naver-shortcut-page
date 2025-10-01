@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { useLinkOpenPreference } from "../_utils/contexts/link-open-preference-context";
 import { MapPinIcon, SearchIcon, StoreIcon } from "./icons";
 import SearchHistory from "./search-history";
 
@@ -50,6 +51,7 @@ export default function SearchBox() {
   const [history, setHistory] = useState<string[]>([]);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const { isNewTab } = useLinkOpenPreference();
 
   type SearchMode = keyof typeof SEARCH_MODE_CONFIG;
 
@@ -120,8 +122,10 @@ export default function SearchBox() {
     }
 
     const targetUrl = SEARCH_MODE_CONFIG[searchMode].buildUrl(trimmed);
+    const target = isNewTab ? "_blank" : "_self";
+    const features = isNewTab ? "noopener,noreferrer" : undefined;
 
-    window.open(targetUrl, "_self", "noopener,noreferrer");
+    window.open(targetUrl, target, features);
 
     const nextHistory = [trimmed, ...history.filter((item) => item !== trimmed)].slice(0, HISTORY_LIMIT);
     persistHistory(nextHistory);

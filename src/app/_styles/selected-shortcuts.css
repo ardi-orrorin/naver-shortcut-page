@@ -1,0 +1,53 @@
+.selected-shortcuts__grid {
+  display: grid;
+  gap: var(--selected-shortcuts-gap, 16px);
+  justify-content: var(--selected-shortcuts-justify, flex-start);
+}
+
+.selected-shortcuts__grid-item {
+  width: var(--selected-shortcuts-tile-width, 75px);
+  height: var(--selected-shortcuts-tile-height, 90px);
+}
+
+.selected-shortcuts__scroller {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.selected-shortcuts__track {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4px;
+  transform: translateX(-50%);
+}
+
+.selected-shortcuts__track-inner {
+  position: relative;
+  height: 2px;
+  width: var(--selected-shortcuts-track-width, 120px);
+  max-width: var(--selected-shortcuts-track-width, 120px);
+  border-radius: 9999px;
+  background-color: rgb(229, 231, 235);
+}
+
+.selected-shortcuts__track-thumb {
+  position: absolute;
+  top: 50%;
+  height: 4px;
+  border-radius: 9999px;
+  background-color: rgb(156, 163, 175);
+  width: var(--selected-shortcuts-thumb-width, 60px);
+  transform: translateY(-50%) translateX(var(--selected-shortcuts-thumb-offset, 0px));
+  transition: transform 150ms ease-out;
+}
+
+.selected-shortcuts__item-wrapper {
+  display: flex;
+  flex-shrink: 0;
+}
