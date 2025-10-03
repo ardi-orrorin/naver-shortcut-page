@@ -17,14 +17,13 @@ const formatTemperature = (value?: number) => (typeof value === "number" ? `${Ma
 const toIntegerTemperature = (value?: number) => (typeof value === "number" ? Math.round(value) : null);
 
 export default function Weather({ lat, long, apiKey }: WeatherProps) {
-  const weatherApiKey = apiKey ?? process.env.NEXT_PUBLIC_OPEN_WEATHER_MAP_API_KEY;
   const [weather, setWeather] = useState<OpenWeatherMapI | null>(null);
   const [city, setCity] = useState<OwmGeoLocationI | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!weatherApiKey) {
+    if (!apiKey) {
       setIsLoading(false);
       return;
     }
@@ -40,12 +39,12 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
 
       try {
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&lang=kr&appid=${weatherApiKey}&units=metric`
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&lang=kr&appid=${apiKey}&units=metric`
         );
         const data = (await response.json()) as OpenWeatherMapI;
 
         const cityResponse = await fetch(
-          `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&limit=1&appid=${weatherApiKey}&lang=kr`
+          `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&limit=1&appid=${apiKey}&lang=kr`
         );
         const cityData = (await cityResponse.json()) as OwmGeoLocationI[];
 
@@ -68,7 +67,7 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
     return () => {
       isMounted = false;
     };
-  }, [lat, long, weatherApiKey]);
+  }, [apiKey, lat, long]);
 
   const hasWeatherData = Boolean(weather);
   const currentWeather = weather?.weather?.[0];
