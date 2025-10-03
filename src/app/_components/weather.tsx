@@ -16,18 +16,13 @@ const WEATHER_URL = "https://weather.naver.com/";
 const formatTemperature = (value?: number) => (typeof value === "number" ? `${Math.round(value)}°` : "--°");
 const toIntegerTemperature = (value?: number) => (typeof value === "number" ? Math.round(value) : null);
 
-export default function Weather({ lat, long, apiKey }: WeatherProps) {
-  const weatherApiKey = apiKey ?? process.env.NEXT_PUBLIC_OPEN_WEATHER_MAP_API_KEY;
+export default function Weather({ lat, long }: WeatherProps) {
   const [weather, setWeather] = useState<OpenWeatherMapI | null>(null);
   const [city, setCity] = useState<OwmGeoLocationI | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!weatherApiKey) {
-      setIsLoading(false);
-      return;
-    }
     if (!lat || !long) {
       return;
     }
@@ -39,23 +34,35 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
       setError(null);
 
       try {
-        const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&lang=kr&appid=${weatherApiKey}&units=metric`
-        );
-        const data = (await response.json()) as OpenWeatherMapI;
+        const response = await fetch(`/api/weather?lat=${lat}&long=${long}`);
+        if (!response.ok) {
+          throw new Error(`${(await response.json()).error}`);
+        }
 
-        const cityResponse = await fetch(
-          `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&limit=1&appid=${weatherApiKey}&lang=kr`
-        );
-        const cityData = (await cityResponse.json()) as OwmGeoLocationI[];
-
+        const data = (await response.json()) as {
+          weatherData: OpenWeatherMapI;
+          cityData: OwmGeoLocationI[];
+        };
         if (!isMounted) return;
-
-        setWeather(data);
-        setCity(Array.isArray(cityData) ? cityData[0] ?? null : null);
+        setWeather(data.weatherData);
+        setCity(data.cityData[0] ?? null);
       } catch (fetchError) {
+        console.error(fetchError);
+
         if (!isMounted) return;
-        setError("날씨 정보를 가져오는데 실패했습니다.");
+
+        const normalizedMessage = (() => {
+          if (fetchError instanceof Error) return fetchError.message;
+          if (typeof fetchError === "string") return fetchError;
+
+          try {
+            return JSON.stringify(fetchError);
+          } catch {
+            return String(fetchError);
+          }
+        })();
+
+        setError(new Error(`${normalizedMessage}`));
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -68,7 +75,7 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
     return () => {
       isMounted = false;
     };
-  }, [lat, long, weatherApiKey]);
+  }, [lat, long]);
 
   const hasWeatherData = Boolean(weather);
   const currentWeather = weather?.weather?.[0];
@@ -81,7 +88,7 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
   const windSpeed = typeof weather?.wind?.speed === "number" ? `${Math.round(weather.wind.speed)} m/s` : null;
   const tempMin = formatTemperature(weather?.main?.temp_min);
   const tempMax = formatTemperature(weather?.main?.temp_max);
-  const canRenderData = hasWeatherData && !isLoading && !error;
+  const canRenderData = hasWeatherData && !isLoading;
 
   const secondaryLine = useMemo(() => {
     if (!canRenderData) return "상세 정보를 불러오는 중";
@@ -105,6 +112,9 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
       .join(" · ");
   }, [canRenderData, humidity, tempMax, tempMin, windSpeed]);
 
+  if (error) {
+    throw error;
+  }
   return (
     <Link href={WEATHER_URL} className="w-full px-4 text-left sm:w-auto sm:px-0">
       <div className="flex w-full items-center gap-3 rounded-xl border border-gray-200 bg-white/95 px-4 py-3 shadow-sm sm:w-auto sm:flex-shrink-0 sm:gap-4 sm:px-5">
@@ -135,8 +145,6 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
           {canRenderData && tertiaryLine && <p className="mt-1 truncate text-[12px] text-gray-500">{tertiaryLine}</p>}
         </div>
       </div>
-
-      {error && !isLoading && <p className="mt-1 text-[11px] text-red-500">{error}</p>}
     </Link>
   );
 }

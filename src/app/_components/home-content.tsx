@@ -40,20 +40,19 @@ function LinkOpenToggle() {
 }
 
 function HomeContentInner({ loadShortcuts }: HomeContentProps) {
-  const weatherApiKey = process.env.NEXT_PUBLIC_OPEN_WEATHER_MAP_API_KEY;
   const [coords, setCoords] = useState<{ lat: string; long: string } | null>(null);
   const [locationAllowed, setLocationAllowed] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!weatherApiKey) {
-      setLocationAllowed(false);
-      return;
-    }
+    // if (!weatherApiKey) {
+    //   setLocationAllowed(false);
+    //   return;
+    // }
 
-    if (!("geolocation" in navigator)) {
-      setLocationAllowed(false);
-      return;
-    }
+    // if (!("geolocation" in navigator)) {
+    //   setLocationAllowed(false);
+    //   return;
+    // }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -68,14 +67,13 @@ function HomeContentInner({ loadShortcuts }: HomeContentProps) {
         setLocationAllowed(false);
       }
     );
-  }, [weatherApiKey]);
+  }, []);
 
   const shouldShowWeather = useMemo(() => {
-    if (!weatherApiKey) return false;
     if (!coords) return false;
     if (locationAllowed === false) return false;
     return true;
-  }, [coords, locationAllowed, weatherApiKey]);
+  }, [coords, locationAllowed]);
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-gray-50 py-16">
@@ -89,9 +87,7 @@ function HomeContentInner({ loadShortcuts }: HomeContentProps) {
             shouldShowWeather ? "sm:items-start sm:justify-between" : "sm:items-center sm:justify-center"
           }`}>
           <Title />
-          {shouldShowWeather && coords && weatherApiKey && (
-            <Weather lat={coords.lat} long={coords.long} apiKey={weatherApiKey} />
-          )}
+          {shouldShowWeather && coords && <Weather lat={coords.lat} long={coords.long} />}
         </div>
         <div className="flex w-full flex-col items-center gap-6">
           <SearchBox />
