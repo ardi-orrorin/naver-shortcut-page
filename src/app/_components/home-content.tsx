@@ -50,12 +50,12 @@ function HomeContentInner({ loadShortcuts }: HomeContentProps) {
       return;
     }
 
-    if (!("geolocation" in navigator)) {
-      setLocationAllowed(false);
-      return;
-    }
+    // if (!("geolocation" in navigator)) {
+    //   setLocationAllowed(false);
+    //   return;
+    // }
 
-    console.log("weatherApiKey", weatherApiKey);
+    // console.log("weatherApiKey", weatherApiKey);
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
