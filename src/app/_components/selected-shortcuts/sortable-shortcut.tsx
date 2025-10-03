@@ -1,9 +1,9 @@
 "use client";
 
-import { CSS } from "@dnd-kit/utilities";
-import { useSortable } from "@dnd-kit/sortable";
-import type { CSSProperties } from "react";
 import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { CSSProperties } from "react";
 import Shutcut from "../shortcut";
 
 export type SortableShortcutProps = {
@@ -24,16 +24,11 @@ export default function SortableShortcut({ id, shortcut, column, row }: Sortable
     transition,
     opacity: isDragging ? 0.6 : 1,
     gridColumnStart: column + 1,
-    gridRowStart: row + 1,
+    gridRowStart: row + 1
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className="selected-shortcuts__grid-item">
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="selected-shortcuts__grid-item">
       <div className={`${TILE_CLASS} cursor-grab select-none active:cursor-grabbing`}>
         <Shutcut {...shortcut} isFavorite={false} isEditable={false} />
       </div>

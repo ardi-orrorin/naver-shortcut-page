@@ -7,7 +7,16 @@ const nextConfig: NextConfig = {
     "/*": ["node_modules/sharp/**/*"]
   },
   images: {
-    qualities: [30, 50, 70, 90, 100]
+    qualities: [30, 50, 70, 90, 100],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "openweathermap.org",
+        port: "",
+        pathname: "/**",
+        search: ""
+      }
+    ]
   }
 };
 

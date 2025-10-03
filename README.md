@@ -56,11 +56,14 @@ docker build -t naver/shortcut:1.0.0 -f docker/Dockerfile .
 
 - NEXT_PUBLIC_IMAGE_QUALITY=30 ## 30, 50, 70, 90, 100
 
-#### 날씨 API
-1. www.weatherapi.com 회원가입
-2. login 후 my page 접속 
-3. Regenerate API Key 생성 후 복사
-4. NEXT_PUBLIC_WEATHER_API_KEY 환경변수에 추가
+#### 날씨정보 API
+
+1. www.openweathermap.org 회원가입
+2. login 후 my api keys 접속
+3. generate API Key 생성 후 복사
+4. NEXT_PUBLIC_OPEN_WEATHER_MAP_API_KEY 환경변수에 추가
+
+
 ### npm run
 
 ```bash
