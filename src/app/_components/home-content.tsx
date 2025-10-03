@@ -45,6 +45,8 @@ function HomeContentInner({ loadShortcuts }: HomeContentProps) {
   const [locationAllowed, setLocationAllowed] = useState<boolean | null>(null);
 
   useEffect(() => {
+    console.log("weatherApiKey", weatherApiKey);
+
     if (!weatherApiKey) {
       setLocationAllowed(false);
       return;
