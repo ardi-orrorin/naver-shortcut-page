@@ -55,6 +55,8 @@ function HomeContentInner({ loadShortcuts }: HomeContentProps) {
       return;
     }
 
+    console.log("weatherApiKey", weatherApiKey);
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setCoords({
