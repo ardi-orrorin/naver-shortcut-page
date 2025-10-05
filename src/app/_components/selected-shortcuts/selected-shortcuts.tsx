@@ -7,7 +7,7 @@ import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import Shutcut from "../shortcut";
+import Shortcut from "../shortcut";
 import { DRAG_ACTIVATION_DISTANCE, TILE_GAP, TILE_HEIGHT, TILE_WIDTH, TRACK_WIDTH } from "./constants";
 import ScrollTrack from "./scroll-track";
 import SortableShortcut from "./sortable-shortcut";
@@ -16,6 +16,7 @@ import { useShortcutLayout } from "./use-shortcut-layout";
 
 type SelectedShortcutsProps = {
   ids: string[];
+  imageQuality: number;
 };
 
 const TILE_CLASS =
@@ -30,7 +31,7 @@ const buildReorderedUrl = (ids: string[]) => {
   return `/?shortcuts=${encoded}`;
 };
 
-export default function SelectedShortcuts({ ids }: SelectedShortcutsProps) {
+export default function SelectedShortcuts({ ids, imageQuality }: SelectedShortcutsProps) {
   const [currentIds, setCurrentIds] = useState<string[]>(ids);
   const [isMounted, setIsMounted] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -142,7 +143,7 @@ export default function SelectedShortcuts({ ids }: SelectedShortcutsProps) {
                   className="selected-shortcuts__grid-item"
                   style={{ gridColumnStart: column + 1, gridRowStart: row + 1 }}>
                   <div className={TILE_CLASS}>
-                    <Shutcut {...shortcut} isFavorite={false} isEditable={false} />
+                    <Shortcut {...shortcut} isFavorite={false} isEditable={false} imageQuality={imageQuality} />
                   </div>
                 </div>
               ))}
@@ -166,7 +167,14 @@ export default function SelectedShortcuts({ ids }: SelectedShortcutsProps) {
               onScroll={handleScroll}>
               <div className="selected-shortcuts__grid" style={gridStyle}>
                 {layout.map(({ shortcut, column, row }) => (
-                  <SortableShortcut key={shortcut.id} id={shortcut.id} shortcut={shortcut} column={column} row={row} />
+                  <SortableShortcut
+                    key={shortcut.id}
+                    id={shortcut.id}
+                    shortcut={shortcut}
+                    column={column}
+                    row={row}
+                    imageQuality={imageQuality}
+                  />
                 ))}
               </div>
             </div>

@@ -1,8 +1,8 @@
 "use client";
 
+import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { List, type RowComponentProps } from "react-window";
-import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
 import Shortcut from "../shortcut";
 
 const CATEGORY_ROW_HEIGHT = 40;
@@ -16,6 +16,7 @@ export type VirtualRow =
 type VirtualRowComponentProps = {
   favoriteIdSet: Set<string>;
   onChangeFavorite: (id: string) => void;
+  imageQuality: number;
   virtualRows: VirtualRow[];
 };
 
@@ -25,6 +26,7 @@ type VirtualizedShortcutListProps = {
   onChangeFavorite: (id: string) => void;
   onScroll?: (scrollTop: number) => void;
   virtualRows: VirtualRow[];
+  imageQuality: number;
 };
 
 const VirtualizedRow = ({
@@ -33,7 +35,8 @@ const VirtualizedRow = ({
   ariaAttributes,
   favoriteIdSet,
   onChangeFavorite,
-  virtualRows
+  virtualRows,
+  imageQuality
 }: RowComponentProps<VirtualRowComponentProps>) => {
   const row = virtualRows[index];
 
@@ -58,6 +61,7 @@ const VirtualizedRow = ({
         isFavorite={favoriteIdSet.has(row.item.id)}
         onClick={() => onChangeFavorite(row.item.id)}
         className="h-full w-full rounded-2xl border border-gray-100 bg-white px-4 py-3 text-left shadow-sm transition hover:border-[#03c75a] hover:shadow-md"
+        imageQuality={imageQuality}
       />
     </div>
   );
@@ -70,7 +74,8 @@ export default function VirtualizedShortcutList({
   height,
   onChangeFavorite,
   onScroll,
-  virtualRows
+  virtualRows,
+  imageQuality
 }: VirtualizedShortcutListProps) {
   const [measuredItemHeight, setMeasuredItemHeight] = useState(FALLBACK_ITEM_ROW_HEIGHT);
   const measurementRef = useCallback((element: HTMLDivElement | null) => {
@@ -108,8 +113,8 @@ export default function VirtualizedShortcutList({
   }, [virtualRows, measuredItemHeight]);
 
   const rowProps = useMemo(
-    () => ({ favoriteIdSet, onChangeFavorite, virtualRows }),
-    [favoriteIdSet, onChangeFavorite, virtualRows]
+    () => ({ favoriteIdSet, onChangeFavorite, virtualRows, imageQuality }),
+    [favoriteIdSet, onChangeFavorite, virtualRows, imageQuality]
   );
 
   return (
@@ -123,6 +128,7 @@ export default function VirtualizedShortcutList({
               isEditable
               isFavorite={favoriteIdSet.has(sampleItem.item.id)}
               className="h-full w-full rounded-2xl border border-gray-100 bg-white px-4 py-3 text-left shadow-sm transition hover:border-[#03c75a] hover:shadow-md"
+              imageQuality={imageQuality}
             />
           </div>
         </div>

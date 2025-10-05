@@ -8,49 +8,44 @@ import { OpenWeatherMapI, OwmGeoLocationI } from "../_utils/types/weather-type";
 type WeatherProps = {
   lat: string;
   long: string;
-  apiKey?: string;
+  apiKey: string;
 };
 
-const WEATHER_URL = "https://weather.naver.com/";
+const NAVER_WEATHER_URL = "https://weather.naver.com/";
 
 const formatTemperature = (value?: number) => (typeof value === "number" ? `${Math.round(value)}°` : "--°");
 const toIntegerTemperature = (value?: number) => (typeof value === "number" ? Math.round(value) : null);
 
-export default function Weather({ lat, long }: WeatherProps) {
+export default function Weather({ lat, long, apiKey }: WeatherProps) {
   const [weather, setWeather] = useState<OpenWeatherMapI | null>(null);
   const [city, setCity] = useState<OwmGeoLocationI | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!lat || !long) {
+    if (!apiKey || !lat || !long) {
       return;
     }
-
-    let isMounted = true;
 
     const getWeather = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await fetch(`/api/weather?lat=${lat}&long=${long}`);
-        if (!response.ok) {
-          throw new Error(`${(await response.json()).error}`);
-        }
+        const weatherRes = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&lang=kr&appid=${apiKey}&units=metric`
+        );
+        const weatherData = (await weatherRes.json()) as OpenWeatherMapI;
 
-        const data = (await response.json()) as {
-          weatherData: OpenWeatherMapI;
-          cityData: OwmGeoLocationI[];
-        };
-        if (!isMounted) return;
-        setWeather(data.weatherData);
-        setCity(data.cityData[0] ?? null);
+        const cityRes = await fetch(
+          `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&limit=1&appid=${apiKey}&lang=kr`
+        );
+
+        const cityData = (await cityRes.json()) as OwmGeoLocationI[];
+
+        setWeather(weatherData);
+        setCity(cityData[0] ?? null);
       } catch (fetchError) {
-        console.error(fetchError);
-
-        if (!isMounted) return;
-
         const normalizedMessage = (() => {
           if (fetchError instanceof Error) return fetchError.message;
           if (typeof fetchError === "string") return fetchError;
@@ -64,18 +59,12 @@ export default function Weather({ lat, long }: WeatherProps) {
 
         setError(new Error(`${normalizedMessage}`));
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     };
 
     getWeather();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [lat, long]);
+  }, [apiKey, lat, long]);
 
   const hasWeatherData = Boolean(weather);
   const currentWeather = weather?.weather?.[0];
@@ -116,7 +105,7 @@ export default function Weather({ lat, long }: WeatherProps) {
     throw error;
   }
   return (
-    <Link href={WEATHER_URL} className="w-full px-4 text-left sm:w-auto sm:px-0">
+    <Link href={NAVER_WEATHER_URL} className="w-full px-4 text-left sm:w-auto sm:px-0">
       <div className="flex w-full items-center gap-3 rounded-xl border border-gray-200 bg-white/95 px-4 py-3 shadow-sm sm:w-auto sm:flex-shrink-0 sm:gap-4 sm:px-5">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#03c75a]/10 sm:h-11 sm:w-11">
           {canRenderData && iconCode ? (

@@ -11,12 +11,13 @@ export type SortableShortcutProps = {
   shortcut: ShortcutT;
   column: number;
   row: number;
+  imageQuality: number;
 };
 
 const TILE_CLASS =
   "flex h-[90px] min-h-[90px] max-h-[90px] min-w-[75px] w-[75px] max-w-[75px] items-center justify-center";
 
-export default function SortableShortcut({ id, shortcut, column, row }: SortableShortcutProps) {
+export default function SortableShortcut({ id, shortcut, column, row, imageQuality }: SortableShortcutProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
   const style: CSSProperties = {
@@ -30,7 +31,7 @@ export default function SortableShortcut({ id, shortcut, column, row }: Sortable
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="selected-shortcuts__grid-item">
       <div className={`${TILE_CLASS} cursor-grab select-none active:cursor-grabbing`}>
-        <Shutcut {...shortcut} isFavorite={false} isEditable={false} />
+        <Shutcut {...shortcut} isFavorite={false} isEditable={false} imageQuality={imageQuality} />
       </div>
     </div>
   );

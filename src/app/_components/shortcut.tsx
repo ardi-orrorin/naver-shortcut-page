@@ -15,6 +15,7 @@ type ShortcutProps = {
   isEditable?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
+  imageQuality: number;
 };
 
 const QUALITIES = [30, 50, 70, 90, 100];
@@ -28,15 +29,14 @@ export default function Shortcut({
   isFavorite = false,
   isEditable = false,
   onClick,
-  className
+  className,
+  imageQuality
 }: ShortcutProps) {
   const { isNewTab } = useLinkOpenPreference();
 
   const containerClassName = ["flex items-center", !isEditable && !isFavorite ? `flex-col gap-2` : `gap-3`, className]
     .filter(Boolean)
     .join(" ");
-
-  const imageQuality: number = Number(process.env.NEXT_PUBLIC_IMAGE_QUALITY || 30);
 
   if (!QUALITIES.includes(imageQuality)) {
     throw new Error(`Invalid image quality allowed values are ${QUALITIES.join(", ")}`);

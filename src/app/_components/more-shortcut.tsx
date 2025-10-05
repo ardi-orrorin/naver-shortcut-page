@@ -3,13 +3,19 @@
 import type { UIEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import jsToBase64Func from "../_utils/funcs/jsToBase64";
-import { useShortcutGroups } from "./more-shortcut/use-shortcut-groups";
+import { useShortcutGroups } from "../_utils/contexts/use-shortcut-groups";
 import VirtualizedShortcutList, { type VirtualRow } from "./more-shortcut/virtualized-shortcut-list";
 import Shortcut from "./shortcut";
 
 const VIRTUALIZATION_THRESHOLD = 50;
 
-export default function MoreShortcut({ loadShortcuts }: { loadShortcuts: string[] }) {
+export default function MoreShortcut({
+  loadShortcuts,
+  imageQuality
+}: {
+  loadShortcuts: string[];
+  imageQuality: number;
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFullHeight, setIsFullHeight] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -262,6 +268,7 @@ export default function MoreShortcut({ loadShortcuts }: { loadShortcuts: string[
                   onChangeFavorite={onChangeFavorite}
                   onScroll={handleVirtualizedScroll}
                   virtualRows={virtualRows}
+                  imageQuality={imageQuality}
                 />
               ) : hasResults ? (
                 <div className="flex flex-col gap-6">
@@ -277,6 +284,7 @@ export default function MoreShortcut({ loadShortcuts }: { loadShortcuts: string[
                             isFavorite={favoriteIdSet.has(item.id)}
                             onClick={() => onChangeFavorite(item.id)}
                             className="h-full rounded-2xl border border-gray-100 bg-white px-4 py-3 text-left shadow-sm transition hover:border-[#03c75a] hover:shadow-md"
+                            imageQuality={imageQuality}
                           />
                         ))}
                       </div>

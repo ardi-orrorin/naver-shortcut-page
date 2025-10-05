@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useLinkOpenPreference } from "../_utils/contexts/link-open-preference-context";
-import { MapPinIcon, SearchIcon, StoreIcon } from "./icons";
+import { MapPinIcon, SearchIcon, StoreIcon } from "../_data/icons";
 import SearchHistory from "./search-history";
 
 const STORAGE_KEY = "naver-shotcut-search-history";
@@ -39,14 +39,12 @@ const fallbackNumber = (value: string | undefined, defaultValue: number) => {
   return defaultValue;
 };
 
-const HISTORY_LIMIT = Math.max(1, Math.floor(fallbackNumber(process.env.NEXT_PUBLIC_SEARCH_HISTORY_LIMIT, 10)));
-
 const HISTORY_HIDE_DELAY = Math.max(
   0,
   Math.floor(fallbackNumber(process.env.NEXT_PUBLIC_SEARCH_HISTORY_HIDE_DELAY, 140))
 );
 
-export default function SearchBox() {
+export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: number }) {
   const [query, setQuery] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -127,7 +125,7 @@ export default function SearchBox() {
 
     window.open(targetUrl, target, features);
 
-    const nextHistory = [trimmed, ...history.filter((item) => item !== trimmed)].slice(0, HISTORY_LIMIT);
+    const nextHistory = [trimmed, ...history.filter((item) => item !== trimmed)].slice(0, searchHistoryLimit);
     persistHistory(nextHistory);
     setIsHistoryOpen(false);
     setIsInputFocused(false);
