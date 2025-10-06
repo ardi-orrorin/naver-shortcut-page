@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { StringOrNull } from "../_utils/types/common-type";
 
 export default function BookmarkHelpModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const [shareMessage, setShareMessage] = useState<StringOrNull>(null);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);

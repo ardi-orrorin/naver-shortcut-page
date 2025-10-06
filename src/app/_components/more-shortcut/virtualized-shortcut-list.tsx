@@ -1,24 +1,13 @@
 "use client";
 
-import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { List, type RowComponentProps } from "react-window";
+import { List } from "react-window";
 import Shortcut from "../shortcut";
+import { VirtualizedRow, VirtualRow } from "./virtualized-row";
 
 const CATEGORY_ROW_HEIGHT = 40;
 const FALLBACK_ITEM_ROW_HEIGHT = 124;
 const OVERSCAN_COUNT = 4;
-
-export type VirtualRow =
-  | { type: "category"; categoryKey: string; category: string }
-  | { type: "item"; categoryKey: string; item: ShortcutT };
-
-type VirtualRowComponentProps = {
-  favoriteIdSet: Set<string>;
-  onChangeFavorite: (id: string) => void;
-  imageQuality: number;
-  virtualRows: VirtualRow[];
-};
 
 type VirtualizedShortcutListProps = {
   favoriteIdSet: Set<string>;
@@ -28,46 +17,6 @@ type VirtualizedShortcutListProps = {
   virtualRows: VirtualRow[];
   imageQuality: number;
 };
-
-const VirtualizedRow = ({
-  index,
-  style,
-  ariaAttributes,
-  favoriteIdSet,
-  onChangeFavorite,
-  virtualRows,
-  imageQuality
-}: RowComponentProps<VirtualRowComponentProps>) => {
-  const row = virtualRows[index];
-
-  if (!row) {
-    return null;
-  }
-
-  if (row.type === "category") {
-    return (
-      <div style={style} {...ariaAttributes} className="box-border flex items-center px-2">
-        <h3 className="text-sm font-semibold text-gray-600">{row.category}</h3>
-      </div>
-    );
-  }
-
-  return (
-    <div style={style} {...ariaAttributes} className="box-border px-1 py-1">
-      <Shortcut
-        key={`more-${row.item.id}`}
-        {...row.item}
-        isEditable
-        isFavorite={favoriteIdSet.has(row.item.id)}
-        onClick={() => onChangeFavorite(row.item.id)}
-        className="h-full w-full rounded-2xl border border-gray-100 bg-white px-4 py-3 text-left shadow-sm transition hover:border-[#03c75a] hover:shadow-md"
-        imageQuality={imageQuality}
-      />
-    </div>
-  );
-};
-
-const getCategoryRowHeight = () => CATEGORY_ROW_HEIGHT;
 
 export default function VirtualizedShortcutList({
   favoriteIdSet,
@@ -105,7 +54,7 @@ export default function VirtualizedShortcutList({
       }
 
       if (row.type === "category") {
-        return getCategoryRowHeight();
+        return CATEGORY_ROW_HEIGHT;
       }
 
       return measuredItemHeight;

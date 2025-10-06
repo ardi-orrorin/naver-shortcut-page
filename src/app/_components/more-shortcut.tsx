@@ -2,20 +2,20 @@
 
 import type { UIEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import jsToBase64Func from "../_utils/funcs/jsToBase64";
 import { useShortcutGroups } from "../_utils/contexts/use-shortcut-groups";
-import VirtualizedShortcutList, { type VirtualRow } from "./more-shortcut/virtualized-shortcut-list";
+import jsToBase64Func from "../_utils/funcs/jsToBase64";
+import { VirtualRow } from "./more-shortcut/virtualized-row";
+import VirtualizedShortcutList from "./more-shortcut/virtualized-shortcut-list";
 import Shortcut from "./shortcut";
+
+type MoreShortcutProps = {
+  loadShortcuts: string[];
+  imageQuality: number;
+};
 
 const VIRTUALIZATION_THRESHOLD = 50;
 
-export default function MoreShortcut({
-  loadShortcuts,
-  imageQuality
-}: {
-  loadShortcuts: string[];
-  imageQuality: number;
-}) {
+export default function MoreShortcut({ loadShortcuts, imageQuality }: MoreShortcutProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFullHeight, setIsFullHeight] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -23,12 +23,14 @@ export default function MoreShortcut({
   const [isCompactLayout, setIsCompactLayout] = useState(false);
   const [listHeight, setListHeight] = useState(360);
   const [autoExpandEnabled, setAutoExpandEnabled] = useState(true);
-  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+  const scrollAreaRef = useRef<NonNullable<HTMLDivElement>>(null);
+
+  const resolvedListHeight = Math.max(Math.floor(listHeight), 240);
 
   const favoriteIdSet = useMemo(() => new Set(loadShortcuts), [loadShortcuts]);
   const { groups: groupedShortcuts } = useShortcutGroups(searchKeyword, favoriteIdSet, showSelectedOnly);
 
-  const virtualRows = useMemo<VirtualRow[]>(() => {
+  const virtualRows = useMemo(() => {
     const rows: VirtualRow[] = [];
 
     groupedShortcuts.forEach(({ categoryKey, category, items }) => {
@@ -115,7 +117,6 @@ export default function MoreShortcut({
 
   const hasResults = groupedShortcuts.length > 0;
   const showVirtualList = shouldVirtualize && hasResults;
-  const resolvedListHeight = Math.max(Math.floor(listHeight), 240);
 
   const handleScrollableAreaScroll = useCallback(
     (event: UIEvent<HTMLDivElement>) => {
@@ -123,9 +124,7 @@ export default function MoreShortcut({
         return;
       }
 
-      const { scrollTop } = event.currentTarget;
-
-      if (scrollTop <= 0) {
+      if (event.currentTarget.scrollTop <= 0) {
         setAutoExpandEnabled(true);
       } else if (!isFullHeight && autoExpandEnabled) {
         setIsFullHeight(true);

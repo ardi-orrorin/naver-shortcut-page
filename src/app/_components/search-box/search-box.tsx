@@ -1,48 +1,13 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { useLinkOpenPreference } from "../_utils/contexts/link-open-preference-context";
-import { MapPinIcon, SearchIcon, StoreIcon } from "../_data/icons";
+import searchConfig from "../../_utils/_constants/search-config";
+import { useLinkOpenPreference } from "../../_utils/contexts/link-open-preference-context";
 import SearchHistory from "./search-history";
 
 const STORAGE_KEY = "naver-shotcut-search-history";
 
-const SEARCH_MODE_CONFIG = {
-  web: {
-    label: "통합 검색",
-    placeholder: "검색어를 입력하세요",
-    icon: SearchIcon,
-    buildUrl: (keyword: string) => `https://search.naver.com/search.naver?query=${encodeURIComponent(keyword)}`,
-    hint: "네이버 통합 검색 결과"
-  },
-  map: {
-    label: "지도 검색",
-    placeholder: "지도에서 장소를 검색하세요",
-    icon: MapPinIcon,
-    buildUrl: (keyword: string) => `https://map.naver.com/p/search/${encodeURIComponent(keyword)}`,
-    hint: "네이버 지도에서 위치를 탐색"
-  },
-  store: {
-    label: "스토어 검색",
-    placeholder: "스토어에서 상품을 검색하세요",
-    icon: StoreIcon,
-    buildUrl: (keyword: string) => `https://search.shopping.naver.com/ns/search?query=${encodeURIComponent(keyword)}`,
-    hint: "네이버 쇼핑에서 상품 찾기"
-  }
-} as const;
-
-const fallbackNumber = (value: string | undefined, defaultValue: number) => {
-  const parsed = Number(value);
-  if (Number.isFinite(parsed)) {
-    return parsed;
-  }
-  return defaultValue;
-};
-
-const HISTORY_HIDE_DELAY = Math.max(
-  0,
-  Math.floor(fallbackNumber(process.env.NEXT_PUBLIC_SEARCH_HISTORY_HIDE_DELAY, 140))
-);
+const HISTORY_HIDE_DELAY = 140;
 
 export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: number }) {
   const [query, setQuery] = useState("");
@@ -51,13 +16,17 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
   const [isInputFocused, setIsInputFocused] = useState(false);
   const { isNewTab } = useLinkOpenPreference();
 
-  type SearchMode = keyof typeof SEARCH_MODE_CONFIG;
+  type SearchMode = keyof typeof searchConfig.searchModeConfig;
 
   const [searchMode, setSearchMode] = useState<SearchMode>("web");
   const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const hideHistoryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modeMenuRef = useRef<HTMLDivElement | null>(null);
+
+  const currentMode = searchConfig.searchModeConfig[searchMode];
+  const ModeIcon = currentMode.icon;
+  const placeholderText = currentMode.placeholder;
 
   useEffect(() => {
     try {
@@ -119,7 +88,7 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
       return;
     }
 
-    const targetUrl = SEARCH_MODE_CONFIG[searchMode].buildUrl(trimmed);
+    const targetUrl = searchConfig.searchModeConfig[searchMode].buildUrl(trimmed);
     const target = isNewTab ? "_blank" : "_self";
     const features = isNewTab ? "noopener,noreferrer" : undefined;
 
@@ -183,10 +152,6 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
     }, HISTORY_HIDE_DELAY);
   };
 
-  const currentMode = SEARCH_MODE_CONFIG[searchMode];
-  const ModeIcon = currentMode.icon;
-  const placeholderText = currentMode.placeholder;
-
   const handleSelectMode = (mode: SearchMode) => {
     setSearchMode(mode);
     setIsModeMenuOpen(false);
@@ -219,7 +184,7 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
                 role="listbox"
                 className="absolute left-0 right-auto z-50 mt-2 min-w-[160px] rounded-2xl border border-[#03c75a]/30 bg-white p-2 text-sm shadow-xl"
                 onMouseDown={(event) => event.preventDefault()}>
-                {Object.entries(SEARCH_MODE_CONFIG).map(([modeValue, config]) => {
+                {Object.entries(searchConfig.searchModeConfig).map(([modeValue, config]) => {
                   const isActive = modeValue === searchMode;
                   const OptionIcon = config.icon;
                   return (
@@ -263,21 +228,14 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
         </button>
       </form>
 
-      {/* <div className="flex items-center gap-2 px-1 text-xs text-gray-500">
-        <span className="inline-flex items-center gap-1">
-          <span className="h-2 w-2 rounded-full bg-[#03c75a]" />
-          {currentMode.label}
-        </span>
-        <span aria-hidden="true">·</span>
-        <span>{currentMode.hint}</span>
-      </div> */}
-
       <SearchHistory
-        items={history}
-        isOpen={isHistoryOpen}
-        onSelect={handleSelectHistory}
-        onClear={handleClearHistory}
-        onDelete={handleDeleteHistoryItem}
+        {...{
+          items: history,
+          isOpen: isHistoryOpen,
+          onSelect: handleSelectHistory,
+          onClear: handleClearHistory,
+          onDelete: handleDeleteHistoryItem
+        }}
       />
     </div>
   );

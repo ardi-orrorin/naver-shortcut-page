@@ -2,7 +2,7 @@
 
 import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
 import { useMemo } from "react";
-import { GRID_ROWS, TILE_GAP, TILE_HEIGHT, TILE_WIDTH } from "./constants";
+import { GRID_ROWS, TILE_GAP, TILE_HEIGHT, TILE_WIDTH } from "../_constants/shortcut-constants";
 
 export type ShortcutLayoutItem = {
   shortcut: ShortcutT;
@@ -71,6 +71,6 @@ export function useShortcutLayout(shortcuts: ShortcutT[], containerWidth: number
     gridHeight,
     gridTemplateColumns,
     layout,
-    gridColumns,
+    gridColumns
   };
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useDeferredValue, useMemo } from "react";
 import shortcutFuncs from "@/app/_utils/funcs/shortcuts-func";
 import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
-import shortcutsData from "../../_data/shortcuts";
+import { useDeferredValue, useMemo } from "react";
+import shortcutsData from "../_constants/shortcuts";
 
 export type ShortcutGroup = {
   categoryKey: string;
@@ -11,11 +11,7 @@ export type ShortcutGroup = {
   items: ShortcutT[];
 };
 
-export function useShortcutGroups(
-  keyword: string,
-  favoriteIdSet: Set<string>,
-  showSelectedOnly: boolean
-) {
+export function useShortcutGroups(keyword: string, favoriteIdSet: Set<string>, showSelectedOnly: boolean) {
   const deferredKeyword = useDeferredValue(keyword);
 
   const filteredShortcuts = useMemo(() => {

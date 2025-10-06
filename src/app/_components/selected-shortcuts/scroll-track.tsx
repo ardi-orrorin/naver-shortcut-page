@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { TRACK_WIDTH } from "./constants";
+import { TRACK_WIDTH } from "../../_utils/_constants/shortcut-constants";
 
 type ScrollTrackProps = {
   hasScroll: boolean;
@@ -21,7 +21,7 @@ export default function ScrollTrack({ hasScroll, thumbWidth, scrollRatio }: Scro
         style={{
           ["--selected-shortcuts-track-width" as keyof CSSProperties]: `${TRACK_WIDTH}px`,
           ["--selected-shortcuts-thumb-width" as keyof CSSProperties]: `${thumbWidth}px`,
-          ["--selected-shortcuts-thumb-offset" as keyof CSSProperties]: `${(TRACK_WIDTH - thumbWidth) * scrollRatio}px`,
+          ["--selected-shortcuts-thumb-offset" as keyof CSSProperties]: `${(TRACK_WIDTH - thumbWidth) * scrollRatio}px`
         }}>
         <div className="selected-shortcuts__track-thumb" />
       </div>

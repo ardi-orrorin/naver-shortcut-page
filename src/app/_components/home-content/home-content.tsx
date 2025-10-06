@@ -1,11 +1,13 @@
 "use client";
 
+import { BooleanOrNull, Nullable } from "@/app/_utils/types/common-type";
+import { GeoLocationI } from "@/app/_utils/types/weather-type";
 import { useEffect, useMemo, useState } from "react";
 import { LinkOpenPreferenceProvider } from "../../_utils/contexts/link-open-preference-context";
 import BookmarkHelpModal from "../bookmark-help-modal";
 import MoreShortcut from "../more-shortcut";
-import SearchBox from "../search-box";
-import SelectedShortcuts from "../selected-shortcuts";
+import SearchBox from "../search-box/search-box";
+import SelectedShortcuts from "../selected-shortcuts/selected-shortcuts";
 import Title from "../title";
 import Weather from "../weather";
 import LinkOpenToggle from "./link-open-toggle";
@@ -23,28 +25,28 @@ export default function HomeContent({
   imageQuality,
   searchHistoryLimit
 }: HomeContentProps) {
-  const [coords, setCoords] = useState<{ lat: string; long: string } | null>(null);
-  const [locationAllowed, setLocationAllowed] = useState<boolean | null>(null);
+  const [geoLocation, setGeoLocation] = useState<Nullable<GeoLocationI>>(null);
+  const [locationAllowed, setLocationAllowed] = useState<BooleanOrNull>(null);
 
   const shouldShowWeather = useMemo(() => {
-    if (!coords) return false;
+    if (!geoLocation) return false;
     if (locationAllowed === false) return false;
     return true;
-  }, [coords, locationAllowed]);
+  }, [geoLocation, locationAllowed]);
 
   useEffect(() => {
     if (!openWeatherMapApiKey) return;
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setCoords({
+        setGeoLocation({
           lat: position.coords.latitude.toFixed(2),
           long: position.coords.longitude.toFixed(2)
         });
         setLocationAllowed(true);
       },
       () => {
-        setCoords(null);
+        setGeoLocation(null);
         setLocationAllowed(false);
       }
     );
@@ -63,14 +65,12 @@ export default function HomeContent({
               shouldShowWeather ? "sm:items-start sm:justify-between" : "sm:items-center sm:justify-center"
             }`}>
             <Title />
-            {shouldShowWeather && coords && (
-              <Weather lat={coords.lat} long={coords.long} apiKey={openWeatherMapApiKey} />
-            )}
+            {shouldShowWeather && geoLocation && <Weather {...geoLocation} apiKey={openWeatherMapApiKey} />}
           </div>
           <div className="flex w-full flex-col items-center gap-6">
-            <SearchBox searchHistoryLimit={searchHistoryLimit} />
-            {loadShortcuts.length > 0 && <SelectedShortcuts ids={loadShortcuts} imageQuality={imageQuality} />}
-            <MoreShortcut loadShortcuts={loadShortcuts} imageQuality={imageQuality} />
+            <SearchBox {...{ searchHistoryLimit }} />
+            {loadShortcuts.length > 0 && <SelectedShortcuts {...{ ids: loadShortcuts, imageQuality }} />}
+            <MoreShortcut {...{ loadShortcuts, imageQuality }} />
           </div>
         </main>
       </div>

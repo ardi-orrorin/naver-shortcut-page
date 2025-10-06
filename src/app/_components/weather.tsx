@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { weatherFuncs } from "../_utils/funcs/weather-func";
+import { Nullable } from "../_utils/types/common-type";
 import { OpenWeatherMapI, OwmGeoLocationI } from "../_utils/types/weather-type";
 
 type WeatherProps = {
@@ -13,14 +15,24 @@ type WeatherProps = {
 
 const NAVER_WEATHER_URL = "https://weather.naver.com/";
 
-const formatTemperature = (value?: number) => (typeof value === "number" ? `${Math.round(value)}°` : "--°");
-const toIntegerTemperature = (value?: number) => (typeof value === "number" ? Math.round(value) : null);
-
 export default function Weather({ lat, long, apiKey }: WeatherProps) {
-  const [weather, setWeather] = useState<OpenWeatherMapI | null>(null);
-  const [city, setCity] = useState<OwmGeoLocationI | null>(null);
+  const [weather, setWeather] = useState<Nullable<OpenWeatherMapI>>(null);
+  const [city, setCity] = useState<Nullable<OwmGeoLocationI>>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<Nullable<Error>>(null);
+
+  const {
+    cityName,
+    mainTemperature,
+    feelsLike,
+    description,
+    iconCode,
+    humidity,
+    windSpeed,
+    tempMin,
+    tempMax,
+    canRenderData
+  } = weatherFuncs.convertToInfo({ weather, city, isLoading });
 
   useEffect(() => {
     if (!apiKey || !lat || !long) {
@@ -65,19 +77,6 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
 
     getWeather();
   }, [apiKey, lat, long]);
-
-  const hasWeatherData = Boolean(weather);
-  const currentWeather = weather?.weather?.[0];
-  const cityName = city?.local_names?.ko ?? city?.name ?? "현재 위치";
-  const mainTemperature = toIntegerTemperature(weather?.main?.temp);
-  const feelsLike = typeof weather?.main?.feels_like === "number" ? formatTemperature(weather.main.feels_like) : null;
-  const description = currentWeather?.description ?? "";
-  const iconCode = currentWeather?.icon;
-  const humidity = typeof weather?.main?.humidity === "number" ? `${weather.main.humidity}%` : null;
-  const windSpeed = typeof weather?.wind?.speed === "number" ? `${Math.round(weather.wind.speed)} m/s` : null;
-  const tempMin = formatTemperature(weather?.main?.temp_min);
-  const tempMax = formatTemperature(weather?.main?.temp_max);
-  const canRenderData = hasWeatherData && !isLoading;
 
   const secondaryLine = useMemo(() => {
     if (!canRenderData) return "상세 정보를 불러오는 중";

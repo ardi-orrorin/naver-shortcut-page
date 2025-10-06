@@ -1,4 +1,4 @@
-import shortcuts from "@/app/_data/shortcuts";
+import shortcuts from "@/app/_utils/_constants/shortcuts";
 import { ShortcutT } from "../types/shortcuts-type";
 import { searchStrFuncs } from "./serach-str";
 

@@ -1,14 +1,7 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { Nullable } from "../types/common-type";
 
 const STORAGE_KEY = "naver-shortcut-link-open-mode";
 
@@ -22,10 +15,10 @@ type LinkOpenPreferenceContextValue = {
   initialized: boolean;
 };
 
-const LinkOpenPreferenceContext = createContext<LinkOpenPreferenceContextValue | null>(null);
+const LinkOpenPreferenceContext = createContext<Nullable<LinkOpenPreferenceContextValue>>(null);
 
 export function LinkOpenPreferenceProvider({ children }: { children: ReactNode }) {
-  const [preference, setPreferenceState] = useState<Preference>("current");
+  const [preference, setPreferenceState] = useState<NonNullable<Preference>>("current");
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
@@ -53,9 +46,12 @@ export function LinkOpenPreferenceProvider({ children }: { children: ReactNode }
     });
   }, []);
 
-  const setPreference = useCallback((next: Preference) => {
-    updatePreference(next);
-  }, [updatePreference]);
+  const setPreference = useCallback(
+    (next: Preference) => {
+      updatePreference(next);
+    },
+    [updatePreference]
+  );
 
   const toggle = useCallback(() => {
     updatePreference((prev) => (prev === "new-tab" ? "current" : "new-tab"));
@@ -82,10 +78,10 @@ export function useLinkOpenPreference() {
       preference: "current" as const,
       isNewTab: false,
       toggle: () => {
-        console.warn("LinkOpenPreferenceProvider를 찾을 수 없어 기본 동작(현재 탭)이 적용되었습니다.");
+        alert("LinkOpenPreferenceProvider를 찾을 수 없어 기본 동작(현재 탭)이 적용되었습니다.");
       },
       setPreference: () => {
-        console.warn("LinkOpenPreferenceProvider를 찾을 수 없어 기본 동작(현재 탭)이 적용되었습니다.");
+        alert("LinkOpenPreferenceProvider를 찾을 수 없어 기본 동작(현재 탭)이 적용되었습니다.");
       },
       initialized: true
     } satisfies LinkOpenPreferenceContextValue;

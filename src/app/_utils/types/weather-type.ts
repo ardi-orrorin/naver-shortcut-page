@@ -1,14 +1,11 @@
+import { StringOrNull } from "./common-type";
+
 export interface OpenWeatherMapI {
   coord: {
     lon: number; // 경도
     lat: number; // 위도
   };
-  weather: {
-    id: number; // 날씨 코드
-    main: string; // 날씨 그룹 (Clouds, Rain 등)
-    description: string; // 구체적인 설명
-    icon: string; // 아이콘 코드
-  }[];
+  weather: OpenWeatherMapWeatherI[];
   base: string; // 관측 기반 정보
   main: {
     temp: number; // 현재 온도
@@ -41,6 +38,13 @@ export interface OpenWeatherMapI {
   cod: number; // 응답 코드
 }
 
+export type OpenWeatherMapWeatherI = {
+  id: number;
+  main: string;
+  description: string;
+  icon: string;
+};
+
 export interface OwmGeoLocationI {
   name: string;
 
@@ -54,4 +58,22 @@ export interface OwmGeoLocationI {
   country: string;
 
   state?: string;
+}
+
+export interface GeoLocationI {
+  lat: string;
+  long: string;
+}
+
+export interface WeatherInfoI {
+  cityName: string;
+  mainTemperature: number | null;
+  feelsLike: StringOrNull;
+  description: string;
+  iconCode: string | undefined;
+  humidity: StringOrNull;
+  windSpeed: StringOrNull;
+  tempMin: string;
+  tempMax: string;
+  canRenderData: boolean;
 }

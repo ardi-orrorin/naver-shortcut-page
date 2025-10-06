@@ -7,12 +7,18 @@ import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  DRAG_ACTIVATION_DISTANCE,
+  TILE_GAP,
+  TILE_HEIGHT,
+  TILE_WIDTH,
+  TRACK_WIDTH
+} from "../../_utils/_constants/shortcut-constants";
+import { useScrollIndicator } from "../../_utils/contexts/use-scroll-indicator";
+import { useShortcutLayout } from "../../_utils/contexts/use-shortcut-layout";
 import Shortcut from "../shortcut";
-import { DRAG_ACTIVATION_DISTANCE, TILE_GAP, TILE_HEIGHT, TILE_WIDTH, TRACK_WIDTH } from "./constants";
 import ScrollTrack from "./scroll-track";
 import SortableShortcut from "./sortable-shortcut";
-import { useScrollIndicator } from "./use-scroll-indicator";
-import { useShortcutLayout } from "./use-shortcut-layout";
 
 type SelectedShortcutsProps = {
   ids: string[];
