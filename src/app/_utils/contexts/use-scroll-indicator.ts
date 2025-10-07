@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type UIEvent } from "react";
-import { THUMB_MIN_WIDTH, TRACK_WIDTH } from "../_constants/shortcut-constants";
+import { THUMB_MIN_WIDTH, TRACK_WIDTH } from "../constants/shortcut-constants";
 
 export type ScrollIndicatorResult = {
   hasScroll: boolean;

@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import searchConfig from "../../_utils/_constants/search-config";
+import searchConfig from "../../_utils/constants/search-config";
 import { useLinkOpenPreference } from "../../_utils/contexts/link-open-preference-context";
 import SearchHistory from "./search-history";
 

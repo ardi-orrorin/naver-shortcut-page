@@ -3,7 +3,7 @@
 import shortcutFuncs from "@/app/_utils/funcs/shortcuts-func";
 import type { ShortcutT } from "@/app/_utils/types/shortcuts-type";
 import { useDeferredValue, useMemo } from "react";
-import shortcutsData from "../_constants/shortcuts";
+import shortcutsData from "../constants/shortcuts";
 
 export type ShortcutGroup = {
   categoryKey: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { TRACK_WIDTH } from "../../_utils/_constants/shortcut-constants";
+import { TRACK_WIDTH } from "../../_utils/constants/shortcut-constants";
 
 type ScrollTrackProps = {
   hasScroll: boolean;

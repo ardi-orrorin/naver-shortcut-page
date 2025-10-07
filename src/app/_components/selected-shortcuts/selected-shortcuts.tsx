@@ -13,7 +13,7 @@ import {
   TILE_HEIGHT,
   TILE_WIDTH,
   TRACK_WIDTH
-} from "../../_utils/_constants/shortcut-constants";
+} from "../../_utils/constants/shortcut-constants";
 import { useScrollIndicator } from "../../_utils/contexts/use-scroll-indicator";
 import { useShortcutLayout } from "../../_utils/contexts/use-shortcut-layout";
 import Shortcut from "../shortcut";

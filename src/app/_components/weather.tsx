@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import weatherApi from "../_utils/apis/weather";
 import { weatherFuncs } from "../_utils/funcs/weather-func";
 import { Nullable } from "../_utils/types/common-type";
 import { OpenWeatherMapI, OwmGeoLocationI } from "../_utils/types/weather-type";
@@ -44,19 +45,12 @@ export default function Weather({ lat, long, apiKey }: WeatherProps) {
       setError(null);
 
       try {
-        const weatherRes = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&lang=kr&appid=${apiKey}&units=metric`
-        );
-        const weatherData = (await weatherRes.json()) as OpenWeatherMapI;
+        const weather = await weatherApi.getMap({ apiKey, lat, long });
 
-        const cityRes = await fetch(
-          `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&limit=1&appid=${apiKey}&lang=kr`
-        );
+        const city = await weatherApi.getCity({ apiKey, lat, long });
 
-        const cityData = (await cityRes.json()) as OwmGeoLocationI[];
-
-        setWeather(weatherData);
-        setCity(cityData[0] ?? null);
+        setWeather(weather);
+        setCity(city[0] ?? null);
       } catch (fetchError) {
         const normalizedMessage = (() => {
           if (fetchError instanceof Error) return fetchError.message;
