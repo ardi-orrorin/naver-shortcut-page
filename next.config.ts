@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/*": ["node_modules/sharp/**/*"]
   },
+
   images: {
     qualities: [30, 50, 70, 90, 100],
     remotePatterns: [
