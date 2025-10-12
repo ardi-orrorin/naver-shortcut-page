@@ -98,7 +98,7 @@ export default function BookmarkHelpModal() {
           aria-labelledby="bookmark-guide-title"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-xl">
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
               <div className="text-start">
                 <h2 id="bookmark-guide-title" className="text-lg font-semibold text-gray-900">
                   링크를 북마크에 추가하는 방법
@@ -125,6 +125,10 @@ export default function BookmarkHelpModal() {
               <li>
                 주소창의 URL 끝에 표시된 `?shutcuts=...` 링크를 그대로 사용해 주세요. 현재 페이지 주소가 곧 북마크
                 링크입니다.
+              </li>
+              <li>
+                검색 모드는 <span className="font-semibold">Ctrl(⌘) + 숫자</span> 단축키로 바로 전환할 수 있어요. 버튼
+                오른쪽의 표시(예: <span className="font-semibold">C+1</span>)를 참고해 보세요.
               </li>
               <li>
                 PC 브라우저에서는 <span className="font-semibold">Ctrl + D</span>(Windows) 또는{" "}

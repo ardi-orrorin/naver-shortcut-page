@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import searchConfig from "../../_utils/constants/search-config";
 import { useLinkOpenPreference } from "../../_utils/contexts/link-open-preference-context";
+import { useSearchModeShortcuts } from "../../_utils/contexts/search-mode-shortcut-context";
 import SearchHistory from "./search-history";
 
 const STORAGE_KEY = "naver-shotcut-search-history";
@@ -18,11 +19,13 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
 
   type SearchMode = keyof typeof searchConfig.searchModeConfig;
 
-  const [searchMode, setSearchMode] = useState<SearchMode>("web");
   const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const hideHistoryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modeMenuRef = useRef<HTMLDivElement | null>(null);
+  const skipInitialShortcutFocusRef = useRef(true);
+
+  const { searchMode, setSearchMode, searchModeEntries, shortcutLabelMap } = useSearchModeShortcuts();
 
   const currentMode = searchConfig.searchModeConfig[searchMode];
   const ModeIcon = currentMode.icon;
@@ -158,6 +161,16 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
     inputRef.current?.focus();
   };
 
+  useEffect(() => {
+    if (skipInitialShortcutFocusRef.current) {
+      skipInitialShortcutFocusRef.current = false;
+      return;
+    }
+
+    setIsModeMenuOpen(false);
+    inputRef.current?.focus();
+  }, [searchMode]);
+
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4 px-4 sm:px-0">
       <form
@@ -170,21 +183,26 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
             <button
               type="button"
               onClick={() => setIsModeMenuOpen((prev) => !prev)}
-              className="flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-[#03c75a]/40 bg-white px-3 py-2 text-xs font-semibold text-[#03c75a] shadow-sm transition hover:border-[#03c75a] hover:text-[#03c75a] focus:border-[#03c75a] focus:outline-none focus:ring-1 focus:ring-[#03c75a]"
+              className="flex h-9 shrink-0 items-center justify-between gap-2 whitespace-nowrap rounded-full border border-[#03c75a]/40 bg-white px-3 py-2 text-xs font-semibold text-[#03c75a] shadow-sm transition hover:border-[#03c75a] hover:text-[#03c75a] focus:border-[#03c75a] focus:outline-none focus:ring-1 focus:ring-[#03c75a]"
               aria-haspopup="listbox"
               aria-expanded={isModeMenuOpen}
               onMouseDown={(event) => {
                 event.preventDefault();
               }}>
-              <ModeIcon className="h-4 w-4" />
-              <span>{currentMode.label}</span>
+              <span className="flex items-center gap-1">
+                <ModeIcon className="h-4 w-4" />
+                <span>{currentMode.label}</span>
+              </span>
+              <span className="hidden rounded-full bg-gray-100 px-2 py-1 text-[10px] font-semibold text-gray-500 md:inline-block">
+                {shortcutLabelMap[searchMode]}
+              </span>
             </button>
             {isModeMenuOpen && (
               <ul
                 role="listbox"
-                className="absolute left-0 right-auto z-50 mt-2 min-w-[160px] rounded-2xl border border-[#03c75a]/30 bg-white p-2 text-sm shadow-xl"
+                className="absolute left-0 right-auto z-50 mt-2 min-w-[190px] rounded-2xl border border-[#03c75a]/30 bg-white p-2 text-sm shadow-xl"
                 onMouseDown={(event) => event.preventDefault()}>
-                {Object.entries(searchConfig.searchModeConfig).map(([modeValue, config]) => {
+                {searchModeEntries.map(([modeValue, config]) => {
                   const isActive = modeValue === searchMode;
                   const OptionIcon = config.icon;
                   return (
@@ -194,11 +212,19 @@ export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: 
                         role="option"
                         aria-selected={isActive}
                         onClick={() => handleSelectMode(modeValue as SearchMode)}
-                        className={`flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left transition ${
+                        className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left transition ${
                           isActive ? "bg-[#03c75a]/10 text-[#03c75a]" : "text-gray-600 hover:bg-gray-100"
                         }`}>
-                        <OptionIcon className="h-4 w-4" />
-                        <span className="text-xs font-medium">{config.label}</span>
+                        <span className="flex items-center gap-2">
+                          <OptionIcon className="h-4 w-4" />
+                          <span className="text-xs font-medium">{config.label}</span>
+                        </span>
+                        <span
+                          className={`hidden rounded-full px-2 py-1 text-[10px] font-semibold md:inline-block ${
+                            isActive ? "bg-[#03c75a]/20 text-[#03c75a]" : "bg-gray-100 text-gray-500"
+                          }`}>
+                          {shortcutLabelMap[modeValue as SearchMode]}
+                        </span>
                       </button>
                     </li>
                   );

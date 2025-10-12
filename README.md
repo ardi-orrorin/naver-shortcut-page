@@ -54,7 +54,7 @@ docker build -t naver/shortcut:1.0.0 -f docker/Dockerfile .
 
 #### 이미지 품질
 
-- NEXT_PUBLIC_IMAGE_QUALITY=30 ## 30, 50, 70, 90, 100
+- NEXT_PUBLIC_IMAGE_QUALITY=30 ## 30, 40, 50, 60, 70, 80, 90, 100
 
 #### 날씨정보 API
 
@@ -62,7 +62,6 @@ docker build -t naver/shortcut:1.0.0 -f docker/Dockerfile .
 2. login 후 my api keys 접속
 3. generate API Key 생성 후 복사
 4. NEXT_PUBLIC_OPEN_WEATHER_MAP_API_KEY 환경변수에 추가
-
 
 ### npm run
 
