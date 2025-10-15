@@ -1,5 +1,6 @@
 import jsToBase64Func from "@/app/_utils/funcs/jsToBase64";
 import HomeContent from "./_components/home-content/home-content";
+import { EnvProvider } from "./_utils/contexts/env-context";
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -13,5 +14,15 @@ export default async function Home({ searchParams }: PageProps) {
   const imageQuality = Number(process.env.NEXT_PUBLIC_IMAGE_QUALITY ?? 30);
   const searchHistoryLimit = Number(process.env.NEXT_PUBLIC_SEARCH_HISTORY_LIMIT ?? 10);
 
-  return <HomeContent {...{ loadShortcuts, openWeatherMapApiKey, imageQuality, searchHistoryLimit }} />;
+  const envValue = {
+    openWeatherMapApiKey,
+    imageQuality,
+    searchHistoryLimit
+  };
+
+  return (
+    <EnvProvider value={envValue}>
+      <HomeContent {...{ loadShortcuts }} />
+    </EnvProvider>
+  );
 }

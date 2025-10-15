@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import searchConfig from "../../_utils/constants/search-config";
+import { useEnvContext } from "../../_utils/contexts/env-context";
 import { useLinkOpenPreference } from "../../_utils/contexts/link-open-preference-context";
 import { useSearchModeShortcuts } from "../../_utils/contexts/search-mode-shortcut-context";
 import SearchHistory from "./search-history";
@@ -10,12 +11,13 @@ const STORAGE_KEY = "naver-shotcut-search-history";
 
 const HISTORY_HIDE_DELAY = 140;
 
-export default function SearchBox({ searchHistoryLimit }: { searchHistoryLimit: number }) {
+export default function SearchBox() {
   const [query, setQuery] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const { isNewTab } = useLinkOpenPreference();
+  const { searchHistoryLimit } = useEnvContext();
 
   type SearchMode = keyof typeof searchConfig.searchModeConfig;
 

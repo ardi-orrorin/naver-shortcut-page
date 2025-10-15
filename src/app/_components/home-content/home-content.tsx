@@ -1,5 +1,6 @@
 "use client";
 
+import { useEnvContext } from "@/app/_utils/contexts/env-context";
 import { BooleanOrNull, Nullable } from "@/app/_utils/types/common-type";
 import { GeoLocationI } from "@/app/_utils/types/weather-type";
 import { useEffect, useMemo, useState } from "react";
@@ -15,19 +16,14 @@ import LinkOpenToggle from "./link-open-toggle";
 
 type HomeContentProps = {
   loadShortcuts: string[];
-  openWeatherMapApiKey: string;
-  imageQuality: number;
-  searchHistoryLimit: number;
 };
 
 export default function HomeContent({
-  loadShortcuts,
-  openWeatherMapApiKey,
-  imageQuality,
-  searchHistoryLimit
+  loadShortcuts
 }: HomeContentProps) {
   const [geoLocation, setGeoLocation] = useState<Nullable<GeoLocationI>>(null);
   const [locationAllowed, setLocationAllowed] = useState<BooleanOrNull>(null);
+  const { openWeatherMapApiKey, imageQuality } = useEnvContext();
 
   const shouldShowWeather = useMemo(() => {
     if (!geoLocation) return false;
@@ -66,11 +62,11 @@ export default function HomeContent({
               shouldShowWeather ? "sm:items-start sm:justify-between" : "sm:items-center sm:justify-center"
             }`}>
             <Title />
-            {shouldShowWeather && geoLocation && <Weather {...geoLocation} apiKey={openWeatherMapApiKey} />}
+            {shouldShowWeather && geoLocation && <Weather {...geoLocation} />}
           </div>
           <div className="flex w-full flex-col items-center gap-6">
             <SearchModeShortcutProvider>
-              <SearchBox {...{ searchHistoryLimit }} />
+              <SearchBox />
             </SearchModeShortcutProvider>
             {loadShortcuts.length > 0 && <SelectedShortcuts {...{ ids: loadShortcuts, imageQuality }} />}
             <MoreShortcut {...{ loadShortcuts, imageQuality }} />

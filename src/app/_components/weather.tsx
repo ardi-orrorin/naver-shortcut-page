@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import weatherApi from "../_utils/apis/weather";
+import { useEnvContext } from "../_utils/contexts/env-context";
 import { weatherFuncs } from "../_utils/funcs/weather-func";
 import { Nullable } from "../_utils/types/common-type";
 import { OpenWeatherMapI, OwmGeoLocationI } from "../_utils/types/weather-type";
@@ -11,16 +12,16 @@ import { OpenWeatherMapI, OwmGeoLocationI } from "../_utils/types/weather-type";
 type WeatherProps = {
   lat: string;
   long: string;
-  apiKey: string;
 };
 
 const NAVER_WEATHER_URL = "https://weather.naver.com/";
 
-export default function Weather({ lat, long, apiKey }: WeatherProps) {
+export default function Weather({ lat, long }: WeatherProps) {
   const [weather, setWeather] = useState<Nullable<OpenWeatherMapI>>(null);
   const [city, setCity] = useState<Nullable<OwmGeoLocationI>>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Nullable<Error>>(null);
+  const { openWeatherMapApiKey: apiKey } = useEnvContext();
 
   const {
     cityName,
