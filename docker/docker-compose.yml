@@ -1,0 +1,11 @@
+services:
+  app:
+    image: naver/naver-shortcut-page:latest
+    container_name: naver_shotcut_page
+    environment:
+      - NEXT_PUBLIC_SEARCH_HISTORY_LIMIT=20
+      - NEXT_PUBLIC_IMAGE_QUALITY=30 ## 30, 50, 70, 90, 100
+      - NEXT_PUBLIC_WEATHER_API_KEY=
+    ports:
+      - "3000:3000"
+    restart: on-failure
