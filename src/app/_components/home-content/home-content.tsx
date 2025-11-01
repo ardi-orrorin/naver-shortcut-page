@@ -12,15 +12,14 @@ import SearchBox from "../search-box/search-box";
 import SelectedShortcuts from "../selected-shortcuts/selected-shortcuts";
 import Title from "../title";
 import Weather from "../weather";
+import Footer from "./footer";
 import LinkOpenToggle from "./link-open-toggle";
 
 type HomeContentProps = {
   loadShortcuts: string[];
 };
 
-export default function HomeContent({
-  loadShortcuts
-}: HomeContentProps) {
+export default function HomeContent({ loadShortcuts }: HomeContentProps) {
   const [geoLocation, setGeoLocation] = useState<Nullable<GeoLocationI>>(null);
   const [locationAllowed, setLocationAllowed] = useState<BooleanOrNull>(null);
   const { openWeatherMapApiKey, imageQuality } = useEnvContext();
@@ -72,6 +71,7 @@ export default function HomeContent({
             <MoreShortcut {...{ loadShortcuts, imageQuality }} />
           </div>
         </main>
+        <Footer />
       </div>
     </LinkOpenPreferenceProvider>
   );
