@@ -63,6 +63,10 @@ docker build -t naver/shortcut:1.0.0 -f docker/Dockerfile .
 3. generate API Key 생성 후 복사
 4. NEXT_PUBLIC_OPEN_WEATHER_MAP_API_KEY 환경변수에 추가
 
+#### Google Analytics
+
+- NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXX
+
 ### npm run
 
 ```bash
