@@ -6,6 +6,8 @@ import { StringOrNull } from "../_utils/types/common-type";
 export default function BookmarkHelpModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [shareMessage, setShareMessage] = useState<StringOrNull>(null);
+  const version = process.env.NEXT_PUBLIC_VERSION;
+  const currentYear = new Date().getFullYear();
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -138,8 +140,12 @@ export default function BookmarkHelpModal() {
               <li>북마크 이름을 정해 저장하면 다음에도 같은 조합의 바로가기를 즉시 불러올 수 있습니다.</li>
             </ol>
 
-            <div className="mt-5 rounded-2xl bg-gray-50 px-4 py-3 text-xs text-gray-500">
+            <div className="my-5 rounded-2xl bg-gray-50 px-4 py-3 text-xs text-gray-500 text-center">
               북마크 링크를 다른 사람과 공유하려면 주소창의 URL을 복사해 전달하면 됩니다.
+            </div>
+            <div className="mt- border-t border-gray-200 pt-4 text-center text-xs text-gray-400">
+              <p>© {currentYear} Naver Shortcut Page. All rights reserved.</p>
+              <p>Version: {version}</p>
             </div>
           </div>
         </div>

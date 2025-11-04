@@ -12,7 +12,6 @@ import SearchBox from "../search-box/search-box";
 import SelectedShortcuts from "../selected-shortcuts/selected-shortcuts";
 import Title from "../title";
 import Weather from "../weather";
-import Footer from "./footer";
 import LinkOpenToggle from "./link-open-toggle";
 
 type HomeContentProps = {
@@ -71,7 +70,6 @@ export default function HomeContent({ loadShortcuts }: HomeContentProps) {
             <MoreShortcut {...{ loadShortcuts, imageQuality }} />
           </div>
         </main>
-        <Footer />
       </div>
     </LinkOpenPreferenceProvider>
   );

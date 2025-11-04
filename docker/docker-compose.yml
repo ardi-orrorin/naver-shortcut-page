@@ -6,6 +6,7 @@ services:
       - NEXT_PUBLIC_SEARCH_HISTORY_LIMIT=20
       - NEXT_PUBLIC_IMAGE_QUALITY=30 ## 30, 50, 70, 90, 100
       - NEXT_PUBLIC_WEATHER_API_KEY=
+      - NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXX
     ports:
       - "3000:3000"
     restart: on-failure
