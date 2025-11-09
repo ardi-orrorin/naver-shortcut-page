@@ -67,6 +67,12 @@ docker build -t naver/shortcut:1.0.0 -f docker/Dockerfile .
 
 - NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXX
 
+#### Prometheus 메트릭
+
+- PROMETHEUS_ENABLED=true
+- PROMETHEUS_PORT=9464
+- PROMETHEUS_HOST=0.0.0.0
+
 ### npm run
 
 ```bash
