@@ -1,8 +1,26 @@
 stages:
+  - test
   - build
+  - deploy
 
 workflow:
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH =~ /^release\//'
+      when: always
+    - when: never
+
+unit-test:
+  stage: test
+  image: node:22-alpine
+  script:
+    - node -v
+    - npm -v
+    - npm ci --include=optional
+    - npm run build
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - if: '$CI_COMMIT_BRANCH =~ /^release\//'
     - when: never
 
@@ -11,17 +29,17 @@ docker-build:
   image: docker:24.0.5
   variables:
     DOCKER_TLS_CERTDIR: ""
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^release\//'
+      when: on_success
+    - when: never
   script:
     - set -eo pipefail
-
     - VERSION="${CI_COMMIT_REF_NAME#release/}"
     - '[[ -n "$VERSION" ]] || (echo "브랜치 이름은 release/<버전> 형식을 따라야 합니다." && exit 1)'
-
     - echo "$HARBOR_PASSWORD" | docker login "$HARBOR_REGISTRY" -u "$HARBOR_USERNAME" --password-stdin
-
     - docker run --privileged --rm tonistiigi/binfmt --install all
     - docker buildx create --name cross-builder --driver docker-container --use
-
     - >
       docker buildx build
       --platform linux/amd64,linux/arm64
@@ -33,3 +51,16 @@ docker-build:
       .
   after_script:
     - docker buildx rm cross-builder || true
+
+deploy:
+  stage: deploy
+  trigger:
+    project: "$CI_PROJECT_PATH"
+    branch: main
+    strategy: depend
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^release\//'
+      when: on_success
+    - when: never
+  needs:
+    - job: docker-build

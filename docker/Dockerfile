@@ -4,9 +4,7 @@ LABEL author="ARDI"
 ENV NODE_ENV=production
 WORKDIR /app
 
-
 COPY package.json package-lock.json ./
-
 
 RUN npm ci --include=optional
 
@@ -23,6 +21,8 @@ LABEL author="ARDI"
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 WORKDIR /app
+
+RUN apk add --no-cache curl
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static

@@ -40,3 +40,14 @@ jobs:
           tags: |
             ${{ secrets.HARBOR_REGISTRY }}/naver/${{ github.event.repository.name }}:v${{ env.VERSION }}
             ${{ secrets.HARBOR_REGISTRY }}/naver/${{ github.event.repository.name }}:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Trigger GitLab deploy pipeline
+        run: |
+          curl -X POST \
+            -F "token=${{ secrets.GITLAB_TRIGGER_TOKEN }}" \
+            -F "ref=main" \
+            "${{ secrets.GITLAB_TRIGGER_URL }}"
