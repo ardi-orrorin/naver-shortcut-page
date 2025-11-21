@@ -46,8 +46,11 @@ jobs:
     needs: build
     steps:
       - name: Trigger GitLab deploy pipeline
+        shell: bash
         run: |
-          curl -X POST \
+          set +x
+          curl -sS -X POST \
             -F "token=${{ secrets.GITLAB_TRIGGER_TOKEN }}" \
             -F "ref=main" \
-            "${{ secrets.GITLAB_TRIGGER_URL }}"
+            "${{ secrets.GITLAB_TRIGGER_URL }}" \
+            > /dev/null 2>&1

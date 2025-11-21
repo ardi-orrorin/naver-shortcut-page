@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import searchConfig from "../../_utils/constants/search-config";
 import { useEnvContext } from "../../_utils/contexts/env-context";
 import { useLinkOpenPreference } from "../../_utils/contexts/link-open-preference-context";
+import { useSearchHistoryPreference } from "../../_utils/contexts/search-history-preference-context";
 import { useSearchModeShortcuts } from "../../_utils/contexts/search-mode-shortcut-context";
 import SearchHistory from "./search-history";
 
@@ -18,6 +19,7 @@ export default function SearchBox() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const { isNewTab } = useLinkOpenPreference();
   const { searchHistoryLimit } = useEnvContext();
+  const { autoSearchEnabled } = useSearchHistoryPreference();
 
   type SearchMode = keyof typeof searchConfig.searchModeConfig;
 
@@ -85,14 +87,12 @@ export default function SearchBox() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const trimmed = query.trim();
+  const performSearch = (keyword: string) => {
+    const trimmed = keyword.trim();
 
     if (!trimmed) {
       return;
     }
-
     const targetUrl = searchConfig.searchModeConfig[searchMode].buildUrl(trimmed);
     const target = isNewTab ? "_blank" : "_self";
     const features = isNewTab ? "noopener,noreferrer" : undefined;
@@ -105,12 +105,21 @@ export default function SearchBox() {
     setIsInputFocused(false);
   };
 
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    performSearch(query);
+  };
+
   const handleSelectHistory = (value: string) => {
     if (hideHistoryTimeoutRef.current) {
       clearTimeout(hideHistoryTimeoutRef.current);
     }
     setQuery(value);
     inputRef.current?.focus();
+    if (autoSearchEnabled) {
+      performSearch(value);
+      return;
+    }
     setIsHistoryOpen(true);
     setIsInputFocused(true);
   };

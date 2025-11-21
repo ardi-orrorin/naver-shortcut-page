@@ -133,6 +133,10 @@ export default function BookmarkHelpModal() {
                 오른쪽의 표시(예: <span className="font-semibold">C+1</span>)를 참고해 보세요.
               </li>
               <li>
+                좌측 상단의 <span className="font-semibold">검색 기록 클릭 시 검색</span> 토글을 켜면, 히스토리 버튼을 누를
+                때 곧바로 검색이 실행돼요. 끄면 입력창에만 채워지니 상황에 맞게 조절해 보세요.
+              </li>
+              <li>
                 PC 브라우저에서는 <span className="font-semibold">Ctrl + D</span>(Windows) 또는{" "}
                 <span className="font-semibold">⌘ + D</span>(Mac) 를 눌러 즐겨찾기에 추가합니다. 모바일 브라우저에서는
                 공유 메뉴에서 &quot;북마크에 추가&quot;를 선택하세요.
@@ -141,7 +145,8 @@ export default function BookmarkHelpModal() {
             </ol>
 
             <div className="my-5 rounded-2xl bg-gray-50 px-4 py-3 text-xs text-gray-500 text-center">
-              북마크 링크를 다른 사람과 공유하려면 주소창의 URL을 복사해 전달하면 됩니다.
+              북마크 링크를 다른 사람과 공유하려면 주소창의 URL을 복사해 전달하면 됩니다. URL에 포함된 shortcuts
+              매개변수를 그대로 두면 저장한 조합을 정확히 불러올 수 있어요.
             </div>
             <div className="mt- border-t border-gray-200 pt-4 text-center text-xs text-gray-400">
               <p>© {currentYear} Naver Shortcut Page. All rights reserved.</p>
