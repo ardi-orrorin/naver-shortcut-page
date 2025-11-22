@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { StringOrNull } from "../_utils/types/common-type";
+import CenterToast from "./common/center-toast";
 
 export default function BookmarkHelpModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,6 +76,7 @@ export default function BookmarkHelpModal() {
 
   return (
     <div className="absolute right-4 top-4 text-right">
+      <CenterToast message={shareMessage} />
       <div className="flex justify-end gap-2">
         <button
           type="button"
@@ -90,7 +92,7 @@ export default function BookmarkHelpModal() {
         </button>
       </div>
       <p aria-live="polite" className="mt-2 text-xs text-gray-500">
-        {shareMessage ?? " "}
+        {" "}
       </p>
 
       {isOpen && (
