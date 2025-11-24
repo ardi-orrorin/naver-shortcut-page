@@ -47,6 +47,32 @@ export function SearchHistoryPreferenceProvider({ children }: { children: ReactN
     updateAutoSearch((prev) => !prev);
   }, [updateAutoSearch]);
 
+  useEffect(() => {
+    if (!initialized) {
+      return;
+    }
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 639px)");
+
+    const applyResponsiveDefault = (matches: boolean) => {
+      if (matches) {
+        updateAutoSearch(false);
+      }
+    };
+
+    applyResponsiveDefault(mediaQuery.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      applyResponsiveDefault(event.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [initialized, updateAutoSearch]);
+
   const value = useMemo(
     () => ({
       autoSearchEnabled,

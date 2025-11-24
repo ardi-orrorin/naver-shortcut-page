@@ -101,20 +101,20 @@ export default function BookmarkHelpModal() {
           aria-modal="true"
           aria-labelledby="bookmark-guide-title"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-lg rounded-3xl bg-white p-6 shadow-xl">
-            <div className="flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
+          <div className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto custom-scrollbar rounded-3xl bg-white p-6 shadow-xl">
+            <button
+              type="button"
+              onClick={closeModal}
+              className="absolute right-4 top-4 rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-500 transition hover:bg-gray-200 hover:text-gray-700">
+              닫기
+            </button>
+            <div className="flex flex-col items-start gap-2 pr-16 sm:pr-4">
               <div className="text-start">
                 <h2 id="bookmark-guide-title" className="text-lg font-semibold text-gray-900">
                   링크를 북마크에 추가하는 방법
                 </h2>
                 <p className="mt-1 text-sm text-gray-500">자주 사용하는 조합을 빠르게 다시 열 수 있어요.</p>
               </div>
-              <button
-                type="button"
-                onClick={closeModal}
-                className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-500 transition hover:bg-gray-200 hover:text-gray-700">
-                닫기
-              </button>
             </div>
 
             <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm text-start leading-6 text-gray-700">
