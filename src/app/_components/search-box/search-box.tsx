@@ -194,7 +194,7 @@ export default function SearchBox() {
             <button
               type="button"
               onClick={() => setIsModeMenuOpen((prev) => !prev)}
-              className="flex h-9 shrink-0 items-center justify-between gap-2 whitespace-nowrap rounded-full border border-[#03c75a]/40 bg-white px-3 py-2 text-xs font-semibold text-[#03c75a] shadow-sm transition hover:border-[#03c75a] hover:text-[#03c75a] focus:border-[#03c75a] focus:outline-none focus:ring-1 focus:ring-[#03c75a]"
+              className="flex h-9 shrink-0 items-center justify-between gap-2 whitespace-nowrap rounded-full border border-[#03c75a]/40 bg-white px-2 py-2 text-xs font-semibold text-[#03c75a] shadow-sm transition hover:border-[#03c75a] hover:text-[#03c75a] focus:border-[#03c75a] focus:outline-none focus:ring-1 focus:ring-[#03c75a] sm:px-3"
               aria-haspopup="listbox"
               aria-expanded={isModeMenuOpen}
               onMouseDown={(event) => {
@@ -202,7 +202,8 @@ export default function SearchBox() {
               }}>
               <span className="flex items-center gap-1">
                 <ModeIcon className="h-4 w-4" />
-                <span>{currentMode.label}</span>
+                <span className="sr-only">검색 타입: {currentMode.label}</span>
+                <span className="inline max-sm:hidden">{currentMode.label}</span>
               </span>
               <span className="hidden rounded-full bg-gray-100 px-2 py-1 text-[10px] font-semibold text-gray-500 md:inline-block">
                 {shortcutLabelMap[searchMode]}
