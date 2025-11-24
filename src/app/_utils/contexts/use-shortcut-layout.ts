@@ -45,8 +45,8 @@ export function useShortcutLayout(shortcuts: ShortcutT[], containerWidth: number
   }, [shortcuts.length, rowsUsed]);
 
   const gridColumns = useMemo(() => {
-    return Math.max(columnsPerRow, requiredColumns);
-  }, [columnsPerRow, requiredColumns]);
+    return requiredColumns;
+  }, [requiredColumns]);
 
   const gridHeight = rowsUsed * TILE_HEIGHT + Math.max(rowsUsed - 1, 0) * TILE_GAP;
 

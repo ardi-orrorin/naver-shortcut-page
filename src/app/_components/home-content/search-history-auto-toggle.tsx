@@ -14,7 +14,7 @@ function SearchHistoryAutoToggle() {
       type="button"
       onClick={toggleAutoSearch}
       aria-pressed={autoSearchEnabled}
-      className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium shadow-sm transition-colors ${
+      className={`hidden sm:flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium shadow-sm transition-colors ${
         autoSearchEnabled
           ? "border-[#03c75a] bg-[#03c75a]/10 text-[#03c75a]"
           : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"

@@ -5,8 +5,8 @@ import { BooleanOrNull, Nullable } from "@/app/_utils/types/common-type";
 import { GeoLocationI } from "@/app/_utils/types/weather-type";
 import { useEffect, useMemo, useState } from "react";
 import { LinkOpenPreferenceProvider } from "../../_utils/contexts/link-open-preference-context";
-import { SearchModeShortcutProvider } from "../../_utils/contexts/search-mode-shortcut-context";
 import { SearchHistoryPreferenceProvider } from "../../_utils/contexts/search-history-preference-context";
+import { SearchModeShortcutProvider } from "../../_utils/contexts/search-mode-shortcut-context";
 import BookmarkHelpModal from "../bookmark-help-modal";
 import MoreShortcut from "../more-shortcut";
 import SearchBox from "../search-box/search-box";
@@ -68,7 +68,7 @@ export default function HomeContent({ loadShortcuts }: HomeContentProps) {
               <Title />
               {shouldShowWeather && geoLocation && <Weather {...geoLocation} />}
             </div>
-            <div className="flex w-full flex-col items-center gap-6">
+            <div className="flex w-full flex-col items-center gap-2">
               <SearchModeShortcutProvider>
                 <SearchBox />
               </SearchModeShortcutProvider>

@@ -41,8 +41,10 @@ export default function SelectedShortcuts({ ids, imageQuality }: SelectedShortcu
   const [currentIds, setCurrentIds] = useState<string[]>(ids);
   const [isMounted, setIsMounted] = useState(false);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [shouldBlockClick, setShouldBlockClick] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const clickBlockTimerRef = useRef<number | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -63,6 +65,14 @@ export default function SelectedShortcuts({ ids, imageQuality }: SelectedShortcu
   const orderedShortcuts = useMemo(() => {
     return currentIds.map((id) => shortcutFuncs.findById(id)).filter((item): item is ShortcutT => Boolean(item));
   }, [currentIds]);
+
+  useEffect(() => {
+    return () => {
+      if (clickBlockTimerRef.current) {
+        window.clearTimeout(clickBlockTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -101,6 +111,15 @@ export default function SelectedShortcuts({ ids, imageQuality }: SelectedShortcu
     scrollDependencyKey
   );
 
+  const blockClickTemporarily = () => {
+    setShouldBlockClick(true);
+    if (clickBlockTimerRef.current) {
+      window.clearTimeout(clickBlockTimerRef.current);
+    }
+
+    clickBlockTimerRef.current = window.setTimeout(() => setShouldBlockClick(false), 120);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -116,6 +135,12 @@ export default function SelectedShortcuts({ ids, imageQuality }: SelectedShortcu
 
     const targetUrl = buildReorderedUrl(nextIds);
     window.location.href = targetUrl;
+
+    blockClickTemporarily();
+  };
+
+  const handleDragStart = () => {
+    blockClickTemporarily();
   };
 
   if (orderedShortcuts.length === 0) {
@@ -163,7 +188,7 @@ export default function SelectedShortcuts({ ids, imageQuality }: SelectedShortcu
 
   return (
     <section className="flex w-full max-w-4xl flex-col gap-4 px-4">
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <SortableContext items={currentIds} strategy={rectSortingStrategy}>
           <div ref={wrapperRef} className="relative pb-3">
             <div
@@ -180,6 +205,7 @@ export default function SelectedShortcuts({ ids, imageQuality }: SelectedShortcu
                     column={column}
                     row={row}
                     imageQuality={imageQuality}
+                    shouldBlockClick={shouldBlockClick}
                   />
                 ))}
               </div>
