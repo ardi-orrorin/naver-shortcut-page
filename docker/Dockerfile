@@ -15,14 +15,16 @@ ENV NEXT_PUBLIC_VERSION=${NEXT_PUBLIC_VERSION}
 
 RUN npm run build
 
-FROM node:22-alpine AS runner
+FROM node:24-slim AS runner
 LABEL author="ARDI"
 
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
 WORKDIR /app
 
-RUN apk add --no-cache curl
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
