@@ -24,7 +24,9 @@ export function VirtualizedRow({
 }: RowComponentProps<VirtualRowComponentProps>) {
   const row = virtualRows[index];
 
-  if (!row) return null;
+  if (!row) {
+    return <div style={style} {...ariaAttributes} />;
+  }
 
   if (row.type === "category") {
     return (
