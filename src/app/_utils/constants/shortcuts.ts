@@ -40,6 +40,42 @@ const shortcuts: ShortcutT[] = [
     categoryCode: "TODAY"
   },
   {
+    id: "svc.pedometer-1",
+    name: "만보기",
+    description: "건강한 습관을 위한, 오늘의 걸음수 체크",
+    icon: "/logo/svc.pedometer-1.png",
+    url: `https://hspace.${DOMAIN}/intro`,
+    category: "건강",
+    categoryCode: "HEALTH"
+  },
+  {
+    id: "svc.pills-1",
+    name: "복약관리",
+    description: "약 복용을 기록·알림해주는 맞춤형 건강 관리 도구",
+    icon: "/logo/svc.pills-1.png",
+    url: `http://healthcare.${DOMAIN}/pills`,
+    category: "건강",
+    categoryCode: "HEALTH"
+  },
+  {
+    id: "svc.healthcare-1",
+    name: "헬스케어",
+    description: "내 건강 정보를 한곳에, 네이버 헬스케어",
+    icon: "/logo/svc.healthcare-1.png",
+    url: `http://healthcare.${DOMAIN}/`,
+    category: "건강",
+    categoryCode: "HEALTH"
+  },
+  {
+    id: "svc.symptomchecker-1",
+    name: "증상체크",
+    description: "입력한 증상 기반 가능한 질병 제안 도구",
+    icon: "/logo/svc.symptomchecker-1.png",
+    url: `https://care.${DOMAIN}/`,
+    category: "건강",
+    categoryCode: "HEALTH"
+  },
+  {
     id: "svc.mycar-1",
     name: "MY CAR",
     description: "알아서 알려주는 스마트한 내 차 관리!",
@@ -72,6 +108,15 @@ const shortcuts: ShortcutT[] = [
     description: "주식 투자의 좋은 습관, 네이버 증권",
     icon: "/logo/svc.stock-1.png",
     url: `https://stock.${DOMAIN}/`,
+    category: "금융∙자산",
+    categoryCode: "FINANCE"
+  },
+  {
+    id: "svc.loan-1",
+    name: "대출비교",
+    description: "대출 조건 조회ㆍ비교 통합서비스",
+    icon: "/logo/svc.loan-1.png",
+    url: `https://loan.pay.${DOMAIN}/n/credit?from=naverservicelist`,
     category: "금융∙자산",
     categoryCode: "FINANCE"
   },
@@ -301,6 +346,15 @@ const shortcuts: ShortcutT[] = [
     categoryCode: "MY"
   },
   {
+    id: "svc.naverqcode-1",
+    name: "검역정보사전입력",
+    description: "국내 입국 시 검역 절차 네이버앱으로 빠르게!",
+    icon: "/logo/svc.naverqcode-1.png",
+    url: `https://qcode.nid.${DOMAIN}/`,
+    category: "인증",
+    categoryCode: "CERTIFICATION"
+  },
+  {
     id: "svc.invoice-1",
     name: "인증서",
     description: "한번 발급으로 3년 동안 편하고 안전하게",
@@ -432,6 +486,15 @@ const shortcuts: ShortcutT[] = [
     description: "가치 있는 콘텐츠의 성공! 프리미엄콘텐츠",
     icon: "/logo/svc.preminumc-1.png",
     url: `https://contents.premium.${DOMAIN}/`,
+    category: "커뮤니티∙콘텐츠",
+    categoryCode: "DISCOVER"
+  },
+  {
+    id: "svc.opentalk-1",
+    name: "오픈톡",
+    description: "함께 떠들고 싶을 때, 네이버 오픈톡!",
+    icon: "/logo/svc.opentalk-1.png",
+    url: `https://talks.${DOMAIN}/?entry=direct#nafullscreen`,
     category: "커뮤니티∙콘텐츠",
     categoryCode: "DISCOVER"
   },
@@ -645,22 +708,33 @@ const shortcuts: ShortcutT[] = [
     categoryCode: "PARTNER",
     subCategory: "기업용 솔루션"
   },
+  // 광고주 센터로 통합
+  // {
+  //   id: "svc.searchad-1",
+  //   name: "검색광고",
+  //   description: "정보를 찾는 고객과 만나는 확실한 방법",
+  //   icon: "/logo/svc.searchad-1.png",
+  //   url: `https://searchad.${DOMAIN}/`,
+  //   category: "파트너서비스",
+  //   categoryCode: "PARTNER",
+  //   subCategory: "광고"
+  // },
+  // {
+  //   id: "svc.displayad-1",
+  //   name: "디스플레이광고",
+  //   description: "3천만 사용자에게 비즈니스 가치 전달",
+  //   icon: "/logo/svc.displayad-1.png",
+  //   url: `https://displayad.${DOMAIN}/`,
+  //   category: "파트너서비스",
+  //   categoryCode: "PARTNER",
+  //   subCategory: "광고"
+  // },
   {
-    id: "svc.searchad-1",
-    name: "검색광고",
-    description: "정보를 찾는 고객과 만나는 확실한 방법",
-    icon: "/logo/svc.searchad-1.png",
-    url: `https://searchad.${DOMAIN}/`,
-    category: "파트너서비스",
-    categoryCode: "PARTNER",
-    subCategory: "광고"
-  },
-  {
-    id: "svc.displayad-1",
-    name: "디스플레이광고",
-    description: "3천만 사용자에게 비즈니스 가치 전달",
-    icon: "/logo/svc.displayad-1.png",
-    url: `https://displayad.${DOMAIN}/`,
+    id: "svc.naverads-1",
+    name: "네이버 광고주센터",
+    description: "모든 비즈니스의 답, 네이버 광고에서 찾다",
+    icon: "/logo/svc.naverads-1.png",
+    url: `https://ads.${DOMAIN}/`,
     category: "파트너서비스",
     categoryCode: "PARTNER",
     subCategory: "광고"
@@ -670,7 +744,7 @@ const shortcuts: ShortcutT[] = [
     name: "쇼핑판",
     description: "오늘의 세일 소식과 최신 트렌드가 한 곳에",
     icon: "/logo/menu.SHOPPING.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=SHOPPING&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=SHOPPING&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -688,7 +762,7 @@ const shortcuts: ShortcutT[] = [
     name: "게임판",
     description: "내 손안의 즐거움, 게임보다 즐거운 게임판",
     icon: "/logo/menu.GAMEAPP.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=GAMEAPP&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=GAMEAPP&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -715,7 +789,7 @@ const shortcuts: ShortcutT[] = [
     name: "건강판",
     description: "건강을 향한 한 걸음, 함께 시작해요",
     icon: "/logo/menu.HEALTH.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=HEALTH&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=HEALTH&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -778,7 +852,7 @@ const shortcuts: ShortcutT[] = [
     name: "뿜판",
     description: "하루에 한 번은 뿜자! 오늘 유머는 여기에",
     icon: "/logo/menu.BOOM.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=BOOM&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=BOOM&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -805,7 +879,7 @@ const shortcuts: ShortcutT[] = [
     name: "뉴스판",
     description: "언론사별, 분야별 뉴스 기사 제공",
     icon: "/logo/menu.NEWS.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=NEWS&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=NEWS&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -841,18 +915,18 @@ const shortcuts: ShortcutT[] = [
     name: "엔터판",
     description: "지금 핫한 엔터 소식, 피드로 즐겨보세요!",
     icon: "/logo/menu.ENT.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=ENT&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=ENT&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
   {
     id: "svc.luxury-1",
-    name: "럭셔리",
-    description: "럭셔리브랜드의 단독상품&본사혜택이 한자리에",
+    name: "하이엔드",
+    description: "럭셔리 토탈 라이프 스타일을 제안합니다",
     icon: "/logo/svc.luxury-1.png",
-    url: `https://shopping.${DOMAIN}/luxury/home`,
-    category: "기타",
-    categoryCode: "ETC"
+    url: `https://shopping.${DOMAIN}/highend/home`,
+    category: "쇼핑",
+    categoryCode: "COMMERCE"
   },
   {
     id: "svc.endic-1",
@@ -877,7 +951,7 @@ const shortcuts: ShortcutT[] = [
     name: "쇼핑판",
     description: "종료된 주제판입니다.",
     icon: "/logo/menu.FADEOUT-SHOPPING.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=FADEOUT-SHOPPING&showConfirm=false&newMain=Y`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=FADEOUT-SHOPPING&showConfirm=false&newMain=Y`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -886,7 +960,7 @@ const shortcuts: ShortcutT[] = [
     name: "패션뷰티판",
     description: "취향을 채우는 패션뷰티 라이프",
     icon: "/logo/menu.FASHION-BEAUTY.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=FASHION-BEAUTY&showConfirm=false&newMain=Y`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=FASHION-BEAUTY&showConfirm=false&newMain=Y`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -899,15 +973,16 @@ const shortcuts: ShortcutT[] = [
     category: "기타",
     categoryCode: "ETC"
   },
-  {
-    id: "menu.FADEOUT-GUIDE",
-    name: "안내판",
-    description: "네이버앱 업데이트에 대한 안내",
-    icon: "/logo/menu.FADEOUT-GUIDE.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=FADEOUT-GUIDE&showConfirm=false&newMain=Y`,
-    category: "기타",
-    categoryCode: "ETC"
-  },
+  // 종료된 서비스
+  // {
+  //   id: "menu.FADEOUT-GUIDE",
+  //   name: "안내판",
+  //   description: "네이버앱 업데이트에 대한 안내",
+  //   icon: "/logo/menu.FADEOUT-GUIDE.png",
+  //   url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=FADEOUT-GUIDE&showConfirm=false&newMain=Y`,
+  //   category: "기타",
+  //   categoryCode: "ETC"
+  // },
   {
     id: "svc.jpdic-1",
     name: "일본어사전",
@@ -949,7 +1024,7 @@ const shortcuts: ShortcutT[] = [
     name: "웹툰판",
     description: "매일매일 새로운 재미 오늘의 웹툰!",
     icon: "/logo/menu.BBOOM.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=BBOOM&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=BBOOM&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -976,7 +1051,7 @@ const shortcuts: ShortcutT[] = [
     name: "리빙푸드판",
     description: "오늘을 맛있게, 공간을 새롭게",
     icon: "/logo/menu.LIVINGHOME.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=LIVINGHOME&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=LIVINGHOME&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -1003,7 +1078,7 @@ const shortcuts: ShortcutT[] = [
     name: "우리동네판",
     description: "동네소식과 정보, 이웃의 이야기를 만나요",
     icon: "/logo/menu.PLACE.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=PLACE&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=PLACE&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -1030,7 +1105,7 @@ const shortcuts: ShortcutT[] = [
     name: "스포츠판",
     description: "스포츠의 모든 정보를 실시간으로 보세요",
     icon: "/logo/menu.SPORTS.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=SPORTS&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=SPORTS&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -1039,7 +1114,7 @@ const shortcuts: ShortcutT[] = [
     name: "지식판",
     description: "핵심만 쏙, 요즘 뜨는 지식 트렌드",
     icon: "/logo/menu.LECTURE.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=LECTURE&showConfirm=false&newMain=Y`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=LECTURE&showConfirm=false&newMain=Y`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -1075,7 +1150,7 @@ const shortcuts: ShortcutT[] = [
     name: "카테크판",
     description: "자동차와 테크, 더 나은 일상 시작",
     icon: "/logo/menu.CARGAME.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=CARGAME&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=CARGAME&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
@@ -1084,19 +1159,20 @@ const shortcuts: ShortcutT[] = [
     name: "경제판",
     description: "오늘의 경제, 나를 움직이는 정보",
     icon: "/logo/menu.DATA.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=DATA&showConfirm=false&newMain=Y`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=DATA&showConfirm=false&newMain=Y`,
     category: "기타",
     categoryCode: "ETC"
   },
-  {
-    id: "svc.biztrip-1",
-    name: "해외출장",
-    description: "출장을 위한 해외항공, 호텔 검색 서비스",
-    icon: "/logo/svc.biztrip-1.png",
-    url: `https://biztrip.${DOMAIN}/`,
-    category: "기타",
-    categoryCode: "ETC"
-  },
+  // 서비스 종료 25-01-15
+  // {
+  //   id: "svc.biztrip-1",
+  //   name: "해외출장",
+  //   description: "출장을 위한 해외항공, 호텔 검색 서비스",
+  //   icon: "/logo/svc.biztrip-1.png",
+  //   url: `https://biztrip.${DOMAIN}/`,
+  //   category: "기타",
+  //   categoryCode: "ETC"
+  // },
   {
     id: "svc.note-1",
     name: "쪽지",
@@ -1120,7 +1196,7 @@ const shortcuts: ShortcutT[] = [
     name: "여행맛집판",
     description: "세상 모든 여행, 맛집의 새로운 발견",
     icon: "/logo/menu.LIVING.png",
-    url: `https://${DOMAIN}/naverapp/?cmd=onMenu&menuCode=LIVING&showConfirm=false`,
+    url: `https://m.${DOMAIN}/naverapp/?cmd=onMenu&menuCode=LIVING&showConfirm=false`,
     category: "기타",
     categoryCode: "ETC"
   },
