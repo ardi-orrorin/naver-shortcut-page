@@ -24,6 +24,9 @@ export const viewport: Viewport = {
   initialScale: 1
 };
 
+export const fetchCache = "force-cache";
+export const revalidate = false;
+
 export default function RootLayout({
   children
 }: Readonly<{
